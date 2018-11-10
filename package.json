@@ -1,0 +1,27 @@
+{
+  "name": "final-project",
+  "version": "1.0.0",
+  "description": "It's the final project :trumpet:",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CS546-JAMS/final-project.git"
+  },
+  "author": "Mark Freeman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CS546-JAMS/final-project/issues"
+  },
+  "homepage": "https://github.com/CS546-JAMS/final-project#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "express-handlebars": "^3.0.0",
+    "mongodb": "^3.1.9",
+    "passport": "^0.4.0",
+    "uuid": "^3.3.2"
+  }
+}
