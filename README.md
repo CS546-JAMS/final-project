@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/CS546-JAMS/final-project.svg?branch=master)](https://travis-ci.com/CS546-JAMS/final-project)
+
 # CS-546 Final Project
 ### Team: JAMS
 
