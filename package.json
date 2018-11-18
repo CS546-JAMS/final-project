@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "jest",
-    "start": "node app.js"
+    "start": "node --no-deprecation app.js",
+    "reset": "node --no-deprecation utils/reset_db.js"
   },
   "jest": {
     "rootDir": "tests"
