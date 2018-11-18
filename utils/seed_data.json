@@ -1,0 +1,49 @@
+{
+    "Albums": [{
+        "title": "Appetite for Destruction",
+        "songs": [],
+        "genre": "Rock"
+    }],
+    "Artists": [
+        {
+        "name": "Slash",
+        "bands": [
+                {
+                    "yearStart": 1985,
+                    "yearEnd": 1996
+                }
+            ]
+        }
+    ],
+    "Bands": [
+        {
+            "name": "Guns N' Roses",
+            "genres": ["Classic Rock", "Rock"],
+            "members": [],
+            "albums": [],
+            "likes": 12879
+        }
+    ],
+    "Genres": [
+        {
+            "title": "Classic Rock",
+            "bands": []
+        },
+        {
+            "title": "Metal",
+            "bands": []
+        }
+    ],
+    "Songs": [
+        {
+            "title": "Paradise City",
+            "lengthInSeconds": 406,
+            "streams": 52567
+        },
+        {
+            "title": "Welcome to the Jungle",
+            "lengthInSeconds": 271,
+            "streams": 80678
+        }
+    ]
+}
