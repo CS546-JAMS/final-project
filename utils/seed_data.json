@@ -1,39 +1,49 @@
 {
-    "Albums": [{
-        "title": "Appetite for Destruction",
-        "songs": [],
-        "genre": "Rock"
-    }],
+    "Albums": [
+        {
+            "title": "Appetite for Destruction",
+            "songs": [],
+            "genre": "Rock"
+        },
+        {
+            "title": "Use Your Illusion I",
+            "songs": [],
+            "genre": "Classic Rock"
+        }
+    ],
     "Artists": [
         {
-        "name": "Slash",
-        "bands": [
+            "name": "Slash",
+            "bands": [
                 {
                     "yearStart": 1985,
-                    "yearEnd": 1996
+                    "yearEnd": 1996,
+                    "roles": ["Lead Guitar", "Guitar"]
                 }
-            ]
+            ],
+            "birth": "07-23-1965"
+        },
+        {
+            "name": "Axl Rose",
+            "bands": [
+                {
+                    "yearStart": 1985,
+                    "roles": ["Vocals"]
+                }
+            ],
+            "birth": "02-06-1962"
         }
     ],
     "Bands": [
         {
             "name": "Guns N' Roses",
-            "genres": ["Classic Rock", "Rock"],
+            "genres": [],
             "members": [],
             "albums": [],
             "likes": 12879
         }
     ],
-    "Genres": [
-        {
-            "title": "Classic Rock",
-            "bands": []
-        },
-        {
-            "title": "Metal",
-            "bands": []
-        }
-    ],
+    "Genres": [],
     "Songs": [
         {
             "title": "Paradise City",
@@ -44,6 +54,31 @@
             "title": "Welcome to the Jungle",
             "lengthInSeconds": 271,
             "streams": 80678
+        },
+        {
+            "title": "Sweet Child o' Mine",
+            "lengthInSeconds": 355,
+            "streams": 76830 
+        },
+        {
+            "title": "The Garden",
+            "lengthInSeconds": 322,
+            "streams": 25613 
+        },
+        {
+            "title": "Bad Apples",
+            "lengthInSeconds": 268,
+            "streams": 46284 
+        },
+        {
+            "title": "Bad Obsession",
+            "lengthInSeconds": 328,
+            "streams": 73283 
+        },
+        {
+            "title": "Perfect Crime",
+            "lengthInSeconds": 143,
+            "streams": 11274 
         }
     ]
 }
