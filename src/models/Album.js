@@ -39,7 +39,7 @@ albumSchema.pre('remove', async function() {
     //remove all songs
     await Song.deleteMany({ _id: { $in: this.songs }});
     //remove from band album list
-    await Band.updateOne({ _id: this.bandId }, { $pull: { albums: this._id }});
+    await Band.updateOne({ _id: this.band }, { $pull: { albums: this._id }});
 });
 
 module.exports = mongoose.model('Album', albumSchema)

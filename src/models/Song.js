@@ -27,7 +27,12 @@ const songSchema = new mongoose.Schema({
 
 //If the song is new, append to the album song set
 songSchema.pre('save', async function() {
-    if(this.isNew) await Album.updateOne({ _id: this.album },  { $addToSet: { songs: this._id }});
+    if(this.isNew) await Album.updateOne({ _id: this.album }, { $addToSet: { songs: this._id }});
+});
+
+songSchema.pre('remove', async function() {
+    //remove from album
+    await Album.updateOne({ _id: this.album }, { $pull: { songs: this._id }});
 });
 
 module.exports = mongoose.model('Song', songSchema)
