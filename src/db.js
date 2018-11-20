@@ -15,11 +15,24 @@ class Database {
             })
             .catch((err) => {
                 console.log('Db connection failed');
-            })
+            });
     }
 
     dropDatabase() {
-        mongoose.connection.dropDatabase();
+        return mongoose.connection.dropDatabase()
+            .then(() => { 
+                console.log('Db dropped');
+            })
+            .catch((err) => {
+                console.log('Db failed to drop');
+            });
+    }
+
+    disconnect() {
+        return mongoose.disconnect()
+            .then(() => { 
+                console.log('Bye!'); 
+            });
     }
 };
 
