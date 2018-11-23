@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
-const Song = require('./Song');
-const Band = require('./Band');
 
 const albumSchema = new mongoose.Schema({
     band: {
@@ -27,19 +25,19 @@ const albumSchema = new mongoose.Schema({
 albumSchema.pre('save', async function() {
     if(this.isNew) {
         //it's new, add to band list
-        await Band.updateOne({_id: this.band }, { $addToSet: { albums: this._id }});
+        await mongoose.model('Band').updateOne({_id: this.band }, { $addToSet: { albums: this._id }});
     }
     else {
-        //update, check what is modified using isModified
+        //update, check what is modified using isModified and go update the references
     }
 });
 
 //this references the object called on
 albumSchema.pre('remove', async function() {
     //remove all songs
-    await Song.deleteMany({ _id: { $in: this.songs }});
+    await mongoose.model('Song').deleteMany({ _id: { $in: this.songs }});
     //remove from band album list
-    await Band.updateOne({ _id: this.band }, { $pull: { albums: this._id }});
+    await mongoose.model('Band').updateOne({ _id: this.band }, { $pull: { albums: this._id }});
 });
 
 module.exports = mongoose.model('Album', albumSchema)
