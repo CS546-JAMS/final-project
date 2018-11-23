@@ -25,10 +25,17 @@ const albumSchema = new mongoose.Schema({
 albumSchema.pre('save', async function() {
     if(this.isNew) {
         //it's new, add to band list
-        await mongoose.model('Band').updateOne({_id: this.band }, { $addToSet: { albums: this._id }});
+        await mongoose.model('Band').updateOne({ _id: this.band }, { $addToSet: { albums: this._id, genres: this.genre }});
     }
-    else {
-        //update, check what is modified using isModified and go update the references
+    else if(this.modifiedPaths().includes('genre')) {
+        const album = await mongoose.model('Album').findById(this._id); //old genre
+        //consider replacing with { 'Classic Rock': 2, 'Metal': 1 } and decrementing / incrementing
+        //to avoid having to query the whole set
+        const sameGenre = await mongoose.model('Album').find({ genre: album.genre });
+        if (!sameGenre || sameGenre.length < 2) //we don't have another of the same, pull it from the genres
+            await mongoose.model('Band').updateOne({ _id: this.band }, { $addToSet: { genres: this.genre }, $pull: { genres: album.genre }});
+        else //we have another, don't pull
+            await mongoose.model('Band').updateOne({ _id: this.band }, { $addToSet: { genres: this.genre }});
     }
 });
 
