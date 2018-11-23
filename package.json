@@ -7,7 +7,8 @@
     "test": "jest --runInBand",
     "start": "node --no-deprecation app.js",
     "reset": "node --no-deprecation utils/reset_db.js",
-    "seed": "node --no-deprecation utils/seed_db.js"
+    "seed": "node --no-deprecation utils/seed_db.js",
+    "debug": "jest --runInBand --detectOpenHandles"
   },
   "jest": {
     "rootDir": "tests"
