@@ -3,9 +3,7 @@ const conn = require('../src/db');
 const Song = require('../src/models/Song');
 const Album = require('../src/models/Album');
 const Band = require('../src/models/Band');
-const song = require('../src/ops/song');
-const album = require('../src/ops/album');
-const band = require('../src/ops/band');
+const ops = require('../src/ops');
 
 const main = async () => {
     //drop everything
@@ -13,10 +11,21 @@ const main = async () => {
     console.log('Database dropped');
 
     //repopulate everything
-    const gunsNRoses = await band.insertBand(seedData.Bands[0]);
-    const appetiteForDestruction = await album.insertAlbum(gunsNRoses, seedData.Albums[0]);
-    const paradiseCity = await song.insertSong(appetiteForDestruction._id, seedData.Songs[0]);
-    const welcomeToTheJungle = await song.insertSong(appetiteForDestruction._id, seedData.Songs[1]);
+    let params;
+    params = seedData.Bands[0];
+    const gunsNRoses = await ops.insert(Band, params);
+
+    params = seedData.Albums[0];
+    params.band = gunsNRoses._id;
+    const appetiteForDestruction = await album.insertAlbum(Album, params);
+
+    params = seedData.Songs[0];
+    params.album = appetiteForDestruction._id;
+    const paradiseCity = await song.insertSong(Song, params);
+
+    params = seedData.Songs[1];
+    params.album = appetiteForDestruction._id;
+    const welcomeToTheJungle = await song.insertSong(Song, params);
 
     console.log('Seed db generated');
     console.log('Band======')
