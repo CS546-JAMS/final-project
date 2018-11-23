@@ -25,4 +25,5 @@ test('Delete a band, resolve dependencies', async() => {
     //assure that the references to the album and the song were deleted by the band hooks
     expect(await Album.findById(albumEntry._id)).toBe(null);
     expect(await Song.findById(songEntry._id)).toBe(null);
+    await conn.disconnect();
 });
