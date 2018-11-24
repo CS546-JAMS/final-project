@@ -31,7 +31,7 @@ songSchema.pre('save', async function() {
 
 songSchema.pre('remove', async function() {
     //remove from album
-    await mongoose.model('Song').updateOne({ _id: this.album }, { $pull: { songs: this._id }});
+    await mongoose.model('Album').updateOne({ _id: this.album }, { $pull: { songs: this._id }});
 });
 
 module.exports = mongoose.model('Song', songSchema)

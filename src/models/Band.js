@@ -38,7 +38,7 @@ const bandSchema = new mongoose.Schema({
 
 //Upon removal, we need to reach into the albums, songs, artists, and genres and delete any reference to the band
 bandSchema.pre('remove', async function() {
-    await mongoose.model('Song').deleteMany({ album: { $in: this.albums}});
+    await mongoose.model('Song').deleteMany({ album: { $in: this.albums }});
     await mongoose.model('Album').deleteMany({ _id: { $in: this.albums }});
     //await mongoose.model('Artist').updateMany({ _id: { $in: this.members }}, { $pull: { history: { bandId: this._id }}});
 });
