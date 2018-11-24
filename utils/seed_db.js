@@ -17,15 +17,15 @@ const main = async () => {
 
     params = seedData.Albums[0];
     params.band = gunsNRoses._id;
-    const appetiteForDestruction = await album.insertAlbum(Album, params);
+    const appetiteForDestruction = await ops.insert(Album, params);
 
     params = seedData.Songs[0];
     params.album = appetiteForDestruction._id;
-    const paradiseCity = await song.insertSong(Song, params);
+    const paradiseCity = await ops.insert(Song, params);
 
     params = seedData.Songs[1];
     params.album = appetiteForDestruction._id;
-    const welcomeToTheJungle = await song.insertSong(Song, params);
+    const welcomeToTheJungle = await ops.insert(Song, params);
 
     console.log('Seed db generated');
     console.log('Band======')
@@ -33,9 +33,9 @@ const main = async () => {
     console.log('Album======')
     console.log(await Album.findOne({ title: "Appetite for Destruction" }));
 
-    await song.deleteSong(paradiseCity);
+    await ops.removeById(Song, paradiseCity._id);
     console.log(await Album.findOne({ title: "Appetite for Destruction" }));
-    await song.deleteSong(welcomeToTheJungle);
+    await ops.removeById(Song, welcomeToTheJungle._id);
     console.log(await Album.findOne({ title: "Appetite for Destruction" }));
 };
 
