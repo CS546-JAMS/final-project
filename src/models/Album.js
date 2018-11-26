@@ -45,6 +45,11 @@ albumSchema.pre('remove', async function() {
     await mongoose.model('Song').deleteMany({ _id: { $in: this.songs }});
     //remove from band album list
     await mongoose.model('Band').updateOne({ _id: this.band }, { $pull: { albums: this._id }});
+
+    //pull album genre from band on remove -- again, consider decrement method to avoid large query
+    const sameGenre = await mongoose.model('Album').find({ genre: this.genre });
+    if(sameGenre.length < 2) //we don't have another of the same genre, pull genre from band
+        await mongoose.model('Band').updateOne({ _id: this.band }, { $pull: { genres: this.genre }});
 });
 
 module.exports = mongoose.model('Album', albumSchema)
