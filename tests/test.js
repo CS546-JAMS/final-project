@@ -1,9 +1,18 @@
 const Song = require('../src/models/Song');
 const Album = require('../src/models/Album');
 const Band = require('../src/models/Band');
-const seedData = require('../utils/seed_data.json');
 const ops = require('../src/ops');
 const conn = require('../src/db');
+const seedData = require('../utils/seed_data.json');
+let data; //copy of seedData to be reset on each run
+
+const deepCopy = (obj) => {
+    return JSON.parse(JSON.stringify(obj)); //make a new deep copy for each run to avoid aliasing
+}
+
+const shallowCopy = (obj) => {
+    return Object.assign({}, obj);
+}
 
 const dumpDb = async () => {
     const fs = require('fs');
@@ -15,6 +24,7 @@ const dumpDb = async () => {
 }
 
 beforeEach(() => {
+    data = deepCopy(seedData);
     conn.dropDatabase();
 });
 
