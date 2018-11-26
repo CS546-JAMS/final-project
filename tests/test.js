@@ -106,7 +106,7 @@ test('Drop a genre with 1 supporting album, make sure band reflects genre drop',
     expect(res.genres[0]).toBe(secondAlbum.genre); //comparing arrays in Jest is strange
 });
 
-test('Add two albums of the same genre, assure band genres only has 1 entry', async () => {
+test('Drop a genre with 2 supporting albums, make sure band does not reflect genre drop', async () => {
     let params;
     params = data.Bands[0];
     const bandEntry = await ops.insert(Band, params);
@@ -117,7 +117,26 @@ test('Add two albums of the same genre, assure band genres only has 1 entry', as
 
     params = shallowCopy(data.Albums[1]);
     params.band = bandEntry._id;
-    let secondAlbum = await ops.insert(Album, params);
+    params.genre = firstAlbum.genre;
+    const secondAlbum = await ops.insert(Album, params);
+
+    const res = await Band.findById(bandEntry._id);
+    expect(res.genres.length).toBe(1);
+});
+
+test('Insert two albums with the same genre, assure they do not double up', async () => {
+    let params;
+    params = data.Bands[0];
+    const bandEntry = await ops.insert(Band, params);
+
+    params = data.Albums[0];
+    params.band = bandEntry._id;
+    const firstAlbum = await ops.insert(Album, params);
+
+    params = shallowCopy(data.Albums[1]);
+    params.band = bandEntry._id;
+    params.genre = firstAlbum.genre; //match the two genres, overwrites the object because of alias
+    const secondAlbum = await ops.insert(Album, params);
 
     const res = await Band.findById(bandEntry._id);
     expect(res.genres.length).toBe(1);
@@ -126,20 +145,58 @@ test('Add two albums of the same genre, assure band genres only has 1 entry', as
 
 test('Insert two albums with the same genre, delete one, assure genre stays on band', async () => {
     let params;
-    params = seedData.Bands[0];
+    params = data.Bands[0];
     const bandEntry = await ops.insert(Band, params);
 
-    params = seedData.Albums[0];
+    params = data.Albums[0];
     params.band = bandEntry._id;
-    let firstAlbum = await ops.insert(Album, params);
+    const firstAlbum = await ops.insert(Album, params);
 
-    params = seedData.Albums[1];
+    params = shallowCopy(data.Albums[1]);
     params.genre = firstAlbum.genre; //match the two genres
     params.band = bandEntry._id;
-    let secondAlbum = await ops.insert(Album, params);
+    const secondAlbum = await ops.insert(Album, params);
 
     await ops.removeById(Album, firstAlbum._id);
     const res = await Band.findById(bandEntry._id);
     expect(res.genres.length).toBe(1);
     expect(res.genres[0]).toBe(firstAlbum.genre);
-})
+});
+
+test('Update an album, ensure it does not double up the genres', async () => {
+    let params;
+    params = data.Bands[0];
+    const bandEntry = await ops.insert(Band, params);
+
+    params = data.Albums[0];
+    params.band = bandEntry._id;
+    const firstAlbum = await ops.insert(Album, params);
+
+    params = data.Albums[1];
+    params.band = bandEntry._id;
+    const secondAlbum = await ops.insert(Album, params);
+    await ops.update(secondAlbum, { genre: firstAlbum.genre });
+
+    const res = await Band.findById(bandEntry._id);
+    expect(res.genres.length).toBe(1);
+    expect(res.genres[0]).toEqual(firstAlbum.genre);
+});
+
+test('Update an album, ensure it creates a new genre', async () => {
+    let params;
+    params = data.Bands[0];
+    const bandEntry = await ops.insert(Band, params);
+
+    params = data.Albums[0];
+    params.band = bandEntry._id;
+    const firstAlbum = await ops.insert(Album, params);
+
+    params = shallowCopy(data.Albums[1]);
+    params.band = bandEntry._id;
+    params.genre = firstAlbum.genre; //match the two genres, overwrites the object because of alias
+    const secondAlbum = await ops.insert(Album, params);
+    await ops.update(secondAlbum, { genre: data.Albums[1].genre }); //set back to original
+
+    const res = await Band.findById(bandEntry._id);
+    expect(res.genres.length).toBe(2); //don't really care about the order, just need 2
+});
