@@ -1,13 +1,13 @@
-const insert = async (schema, params) => {
-    const doc = new schema(params);
-    await doc.save();
-    return doc;
+const models = {
+    'song': require('../src/models/Song'),
+    'album': require('../src/models/Album'),
+    'band': require('../src/models/Band')
 }
 
-//we expect changes to be a json object
-const update = async (doc, changes) => {
-    doc.set(changes); //need to inform mongoose of changes using this or manually using markModified()
+const insert = async (schema, params) => {
+    const doc = new models[schema](params);
     await doc.save();
+    return doc;
 }
 
 const insertMany = async (schema, arr) => {
@@ -15,28 +15,43 @@ const insertMany = async (schema, arr) => {
     //we must iterate and generate models as we go
 
     //iterating over a series of async calls can be tricky, as it will want to
-    //return when not all are done.  Can use a closure with a simple counter to keep track
+    //return when not all are done.  We'll use Promise.all() for this
     let promises = [];
     arr.forEach(async (params) => {
-        const doc = new schema(params);
+        const doc = new models[schema](params);
         promises.push(doc.save());
     });
     return Promise.all(promises);
 }
 
 const removeById = async (schema, id) => {
-    const doc = await schema.findById(id)
+    const doc = await models[schema].findById(id)
     await doc.remove();
 }
 
-const retrieveAll = async (schema) => {
-    return await schema.find({});
+const getAll = async (schema) => {
+    return await models[schema].find({});
+}
+
+const getById = async (schema, id) => {
+    return await models[schema].findById(id);
+}
+
+const getByParams = async (schema, params) => {
+    return await models[schema].find(params);
+}
+
+const update = async (doc, params) => {
+    doc.set(params); //need to inform mongoose of changes using this or manually using markModified()
+    await doc.save();
 }
 
 module.exports = {
     insert: insert,
     insertMany: insertMany,
     removeById: removeById,
-    retrieveAll: retrieveAll,
+    getAll: getAll,
+    getById: getById,
+    getByParams: getByParams,
     update: update
 }
