@@ -4,6 +4,12 @@ const insert = async (schema, params) => {
     return doc;
 }
 
+//we expect changes to be a json object
+const update = async (doc, changes) => {
+    doc.set(changes); //need to inform mongoose of changes using this or manually using markModified()
+    await doc.save();
+}
+
 const insertMany = async (schema, arr) => {
     //if we want the hooks, we can't use Model.collection.insert,
     //we must iterate and generate models as we go
@@ -31,5 +37,6 @@ module.exports = {
     insert: insert,
     insertMany: insertMany,
     removeById: removeById,
-    retrieveAll: retrieveAll
+    retrieveAll: retrieveAll,
+    update: update
 }
