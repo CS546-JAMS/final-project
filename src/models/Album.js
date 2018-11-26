@@ -16,7 +16,16 @@ const albumSchema = new mongoose.Schema({
         ref: 'Song'
     }],
     genre: {
-        type: String
+        type: String,
+        set: function(g) { //provide custom state to use in the updating, again we use 'this' so can't use arrow functions
+            if(this.isNew) //keep track of the last genre and the one before that
+                this._memory = g;
+            else {
+                this._previousGenre = this._memory;
+                this._memory = g;
+            }
+            return g;
+        } 
     }
 });
 
@@ -32,7 +41,7 @@ albumSchema.pre('save', async function() {
         //consider replacing with { 'Classic Rock': 2, 'Metal': 1 } on band and decrementing / incrementing 
         //to avoid having to query the whole set
         const sameGenre = await mongoose.model('Album').find({ band: this.band, genre: this._previousGenre });
-            await mongoose.model('Band').updateOne({ _id: this.band }, { $addToSet: { genres: this.genre }});
+        await mongoose.model('Band').updateOne({ _id: this.band }, { $addToSet: { genres: this.genre }});
         if (sameGenre.length < 2) { //we don't have another of the same, pull it from the 
             await mongoose.model('Band').updateOne({ _id: this.band }, { $pull: { genres: this._previousGenre }});
         }
