@@ -34,26 +34,26 @@ afterAll(async () => {
 });
 
 test('Simple insert 1 band', async () => {
-    const entry = await ops.insert(Band, seedData.Bands[0]);
-    const res = await Band.findById(entry._id);
-    expect(res.name).toBe(entry.name);
+    const bandEntry = await ops.insert(Band, data.Bands[0]);
+    const res = await Band.findById(bandEntry._id);
+    expect(res.name).toBe(bandEntry.name);
 });
 
 test('Delete a band, resolve dependencies', async () => {
     let params;
-    params = seedData.Bands[0];
-    let bandEntry = await ops.insert(Band, params);
+    params = data.Bands[0];
+    const bandEntry = await ops.insert(Band, params);
 
-    params = seedData.Albums[0];
+    params = data.Albums[0];
     params.band = bandEntry._id;
     const albumEntry = await ops.insert(Album, params);
 
-    params = seedData.Songs[0];
+    params = data.Songs[0];
     params.album = albumEntry._id;
     const songEntry = await ops.insert(Song, params);
 
-    bandEntry = await Band.findById(bandEntry._id);
-    await bandEntry.remove();
+    const res = await Band.findById(bandEntry._id);
+    await res.remove();
 
     //assure that the references to the album and the song were deleted by the band hooks
     expect(await Album.findById(albumEntry._id)).toBe(null);
@@ -62,22 +62,22 @@ test('Delete a band, resolve dependencies', async () => {
 
 test('Make sure an album deletion only affects its songs', async () => {
     let params;
-    params = seedData.Bands[0];
+    params = data.Bands[0];
     const bandEntry = await ops.insert(Band, params);
 
-    params = seedData.Albums[0];
+    params = data.Albums[0];
     params.band = bandEntry._id;
-    let firstAlbum = await ops.insert(Album, params);
+    const firstAlbum = await ops.insert(Album, params);
 
-    params = seedData.Albums[1];
+    params = data.Albums[1];
     params.band = bandEntry._id;
-    let secondAlbum = await ops.insert(Album, params);
+    const secondAlbum = await ops.insert(Album, params);
 
-    params = [seedData.Songs[0], seedData.Songs[1], seedData.Songs[2]]
+    params = [data.Songs[0], data.Songs[1], data.Songs[2]]
     params.forEach((s) => { s.album = firstAlbum._id });
     await ops.insertMany(Song, params);
 
-    params = [seedData.Songs[3], seedData.Songs[4], seedData.Songs[5], seedData.Songs[6]];
+    params = [data.Songs[3], data.Songs[4], data.Songs[5], data.Songs[6]];
     params.forEach((s) => { s.album = secondAlbum._id });
     await ops.insertMany(Song, params);
 
@@ -89,16 +89,16 @@ test('Make sure an album deletion only affects its songs', async () => {
 
 test('Drop a genre with 1 supporting album, make sure band reflects genre drop', async () => {
     let params;
-    params = seedData.Bands[0];
+    params = data.Bands[0];
     const bandEntry = await ops.insert(Band, params);
 
-    params = seedData.Albums[0];
+    params = data.Albums[0];
     params.band = bandEntry._id;
-    let firstAlbum = await ops.insert(Album, params);
+    const firstAlbum = await ops.insert(Album, params);
 
-    params = seedData.Albums[1];
+    params = data.Albums[1];
     params.band = bandEntry._id;
-    let secondAlbum = await ops.insert(Album, params);
+    const secondAlbum = await ops.insert(Album, params);
 
     await ops.removeById(Album, firstAlbum._id);
     const res = await Band.findById(bandEntry._id);
@@ -108,15 +108,14 @@ test('Drop a genre with 1 supporting album, make sure band reflects genre drop',
 
 test('Add two albums of the same genre, assure band genres only has 1 entry', async () => {
     let params;
-    params = seedData.Bands[0];
+    params = data.Bands[0];
     const bandEntry = await ops.insert(Band, params);
 
-    params = seedData.Albums[0];
+    params = data.Albums[0];
     params.band = bandEntry._id;
-    let firstAlbum = await ops.insert(Album, params);
+    const firstAlbum = await ops.insert(Album, params);
 
-    params = seedData.Albums[1];
-    params.genre = firstAlbum.genre; //match the two genres
+    params = shallowCopy(data.Albums[1]);
     params.band = bandEntry._id;
     let secondAlbum = await ops.insert(Album, params);
 
