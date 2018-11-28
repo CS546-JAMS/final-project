@@ -16,7 +16,8 @@ const dumpDb = async () => {
     let out = {};
     out.Songs = await ops.getAll('song');
     out.Albums = await ops.getAll('album');
-    out.Bands = await ops.getAll('album');
+    out.Bands = await ops.getAll('band');
+    out.Artists = await ops.getAll('artist');
     fs.writeFile('out.json', JSON.stringify(out, null, 4)); //pretty print out file
 }
 
