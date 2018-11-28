@@ -17,14 +17,14 @@ const albumSchema = new mongoose.Schema({
     }],
     genre: {
         type: String,
-        set: function(g) { //provide custom state to use in the updating, again we use 'this' so can't use arrow functions
+        set: function(newGenre) { //provide custom state to use in the updating, again we use 'this' so can't use arrow functions
             if(this.isNew) //keep track of the last genre and the one before that
-                this._memory = g;
+                this._memory = newGenre;
             else {
                 this._previousGenre = this._memory;
-                this._memory = g;
+                this._memory = newGenre;
             }
-            return g;
+            return newGenre;
         } 
     }
 });
