@@ -1,7 +1,8 @@
 const models = {
-    'song': require('../src/models/Song'),
-    'album': require('../src/models/Album'),
-    'band': require('../src/models/Band')
+    'song': require('./models/Song'),
+    'album': require('./models/Album'),
+    'band': require('./models/Band'),
+    'artist': require('./models/Artist')
 }
 
 const insert = async (schema, params) => {
