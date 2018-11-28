@@ -198,3 +198,36 @@ test('Update an album, ensure it creates a new genre', async () => {
     const res = await ops.getById('band', bandEntry._id);
     expect(res.genres.length).toBe(2); //don't really care about the order, just need 2
 });
+
+test('Insert an artist', async () => {
+    let params;
+    params = data.Bands[0];
+    const bandEntry = await ops.insert('band', params);
+
+    params = deepCopy(data.Artists[0]);
+    params.bands[0].band = bandEntry._id;
+    const artistEntry = await ops.insert('artist', params);
+
+    const res = await ops.getById('band', bandEntry._id);
+    expect(res.members.length).toBe(1);
+    expect(res.members[0]).toEqual(artistEntry._id);
+});
+
+test('Delete an artist, assure that the band gets updated', async() => {
+    let params;
+    params = data.Bands[0];
+    const bandEntry = await ops.insert('band', params);
+    
+    params = deepCopy(data.Artists[0]);
+    params.bands[0].band = bandEntry._id;
+    const artistEntry = await ops.insert('artist', params);
+
+    //these can be set in motion and awaited later on:
+    //const artistEntry = ops.insert('artist', params);
+    //...
+    //await artistEntry
+
+    await ops.removeById('artist', artistEntry._id);
+    const res = await ops.getById('band', bandEntry._id);
+    expect(res.members.length).toBe(0);
+})
