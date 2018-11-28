@@ -31,7 +31,7 @@ afterAll(async () => {
     conn.disconnect();
 });
 
-test('Simple insert 1 band', async () => {
+test('Insert a band', async () => {
     const bandEntry = await ops.insert('band', data.Bands[0]);
     const res = await ops.getById('band', bandEntry._id);
     expect(res.name).toBe(bandEntry.name);
@@ -58,7 +58,7 @@ test('Delete a band, resolve dependencies', async () => {
     expect(await ops.getById('song', songEntry._id)).toBeNull();
 });
 
-test('Make sure an album deletion only affects its songs', async () => {
+test('Delete an album, assure it only affects its songs', async () => {
     let params;
     params = data.Bands[0];
     const bandEntry = await ops.insert('band', params);
@@ -85,7 +85,7 @@ test('Make sure an album deletion only affects its songs', async () => {
     expect(await ops.getByParams('song', { album: firstAlbum._id })).toEqual([]); //object equality because find() must return array
 });
 
-test('Drop a genre with 1 supporting album, make sure band reflects genre drop', async () => {
+test('Delete a genre with 1 supporting album, make sure band reflects genre drop', async () => {
     let params;
     params = data.Bands[0];
     const bandEntry = await ops.insert('band', params);
@@ -104,7 +104,7 @@ test('Drop a genre with 1 supporting album, make sure band reflects genre drop',
     expect(res.genres[0]).toBe(secondAlbum.genre); //comparing arrays in Jest is strange
 });
 
-test('Drop a genre with 2 supporting albums, make sure band does not reflect genre drop', async () => {
+test('Delete a genre with 2 supporting albums, make sure band does not reflect genre drop', async () => {
     let params;
     params = data.Bands[0];
     const bandEntry = await ops.insert('band', params);
