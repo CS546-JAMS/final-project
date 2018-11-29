@@ -173,7 +173,7 @@ test('Update an album, ensure it does not double up the genres', async () => {
     params = data.Albums[1];
     params.band = bandEntry._id;
     const secondAlbum = await ops.insert('album', params);
-    await ops.update(secondAlbum, { genre: firstAlbum.genre });
+    await ops.updateByDoc(secondAlbum, { genre: firstAlbum.genre });
 
     const res = await ops.getById('band', bandEntry._id);
     expect(res.genres.length).toBe(1);
@@ -193,7 +193,7 @@ test('Update an album, ensure it creates a new genre', async () => {
     params.band = bandEntry._id;
     params.genre = firstAlbum.genre; //match the two genres, overwrites the object because of alias
     const secondAlbum = await ops.insert('album', params);
-    await ops.update(secondAlbum, { genre: data.Albums[1].genre }); //set back to original
+    await ops.updateById('album', secondAlbum._id, { genre: data.Albums[1].genre }); //set back to original
 
     const res = await ops.getById('band', bandEntry._id);
     expect(res.genres.length).toBe(2); //don't really care about the order, just need 2
@@ -230,4 +230,42 @@ test('Delete an artist, assure that the band gets updated', async() => {
     await ops.removeById('artist', artistEntry._id);
     const res = await ops.getById('band', bandEntry._id);
     expect(res.members.length).toBe(0);
-})
+});
+
+test('Delete a band, assure that the artist gets updated', async() => {
+    let params;
+    params = data.Bands[0];
+    const bandEntry = await ops.insert('band', params);
+
+    params = deepCopy(data.Artists[0]);
+    params.bands[0].band = bandEntry._id;
+    const artistEntry = await ops.insert('artist', params);
+
+    await ops.removeById('band', bandEntry._id);
+    const res = await ops.getById('artist', artistEntry._id);
+    expect(res.bands.length).toBe(0);
+});
+
+test('Update the members of a band, assure that the histories get updated', async() => {
+    let params;
+    params = data.Bands[0];
+    const bandEntry = await ops.insert('band', params);
+
+    params = deepCopy(data.Artists[0]);
+    params.bands[0].band = bandEntry._id;
+    const artistEntry = await ops.insert('artist', params);
+
+    params = deepCopy(data.Artists[1]);
+    params.bands[0].band = bandEntry._id;
+    const otherArtistEntry = await ops.insert('artist', params);
+
+    //console.log(artistEntry); // Slash
+    //console.log(otherArtistEntry); // Axl Rose
+
+    //TODO: FIX
+    await ops.updateByDoc(bandEntry, { members: [ artistEntry._id ]}); //drop Axl Rose
+    let res = await ops.getById('artist', artistEntry._id);
+    expect(res.bands.length).toBe(1);
+    res = await ops.getById('artist', otherArtistEntry._id);
+    expect(res.bands.length).toBe(0);
+});
