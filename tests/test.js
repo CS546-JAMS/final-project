@@ -173,7 +173,7 @@ test('Update an album, ensure it does not double up the genres', async () => {
     params = data.Albums[1];
     params.band = bandEntry._id;
     const secondAlbum = await ops.insert('album', params);
-    await ops.updateByDoc(secondAlbum, { genre: firstAlbum.genre });
+    await ops.updateById('album', secondAlbum._id, { genre: firstAlbum.genre });
 
     const res = await ops.getById('band', bandEntry._id);
     expect(res.genres.length).toBe(1);
@@ -259,11 +259,7 @@ test('Update the members of a band, assure that the histories get updated', asyn
     params.bands[0].band = bandEntry._id;
     const otherArtistEntry = await ops.insert('artist', params);
 
-    //console.log(artistEntry); // Slash
-    //console.log(otherArtistEntry); // Axl Rose
-
-    //TODO: FIX
-    await ops.updateByDoc(bandEntry, { members: [ artistEntry._id ]}); //drop Axl Rose
+    await ops.updateById('band', bandEntry._id, { members: [ artistEntry._id ]});
     let res = await ops.getById('artist', artistEntry._id);
     expect(res.bands.length).toBe(1);
     res = await ops.getById('artist', otherArtistEntry._id);

@@ -26,15 +26,6 @@ const bandSchema = new mongoose.Schema({
     }
 });
 
-//we don't need to handle the updating of a band here.  The reasoning for this is that the only
-//dependencies we would have to work out would be albums or member updates, all others are either
-//composed or do not affect other records.
-
-//name -- atomic.  No other record references the name of the band.
-//genres -- cannot be updated.  This is composed by the genres of the albums.
-//members -- not-atomic -- handled by artist update
-//albums -- not-atomic -- handled by album update
-//likes -- atomic
 bandSchema.pre('save', async function() {
     if(this.isNew) { //just cram them all in, update the supplied artists
         await mongoose.model('Artist').updateMany({ _id: { $in: this.members }}, { $addToSet: { history: { band: this._id }}});
