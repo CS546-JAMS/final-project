@@ -12,16 +12,7 @@ const bandSchema = new mongoose.Schema({
     }],
     members: [{
         type: ObjectId,
-        ref: 'Artist',
-        set: function(newMembers) {
-            if(this.isNew) //we'll use the same memory style we did with albums
-                this._memberMemory = newMembers;
-            else {
-                this._previousMembers = this._memberMemory;
-                this._memberMemory = newMembers;
-            }
-            return newMembers
-        }
+        ref: 'Artist'
     }],
     albums: [{
         type: ObjectId,
@@ -50,17 +41,18 @@ bandSchema.pre('save', async function() {
     }
     else { //it's an update, need to see the modified paths
         if(this.modifiedPaths().includes('members')) {
-            previousMembers = new Set(this._previousMembers);
-            newMembers = new Set(this.members);
+            const old = await mongoose.model('Band').findById(this._id); //this is a horrid way to do this
+
+            const previousMembers = new Set(old.members);
+            const newMembers = new Set(this.members);
             
             //compute who has been removed and added using set subtraction
-            removals = [...previoiusMembers].filter(m => !newMembers.has(m));
-            additions = [...newMembers].filter(m => !previousMembers.has(m));
-            
+            const removals = [...previousMembers].filter(m => !newMembers.has(m));
+            const additions = [...newMembers].filter(m => !previousMembers.has(m));
+        
             //now iterate over these two and remove/add them
-            //might be bands: { history.band: this._id }
-            await mongoose.model('Artist').updateMany({ _id: { $in: this.removals }}, { $pull: { history: { band: this._id }}});
-            await mongoose.model('Artist').updateMany({ _id: { $in: this.additions }}, { $addToSet: { history: { band: this._id }}});
+            await mongoose.model('Artist').updateMany({ _id: { $in: removals }}, { $pull: { bands: { band: this._id }}});
+            await mongoose.model('Artist').updateMany({ _id: { $in: additions }}, { $addToSet: { bands: { band: this._id }}});
         }
     }
 });
@@ -71,7 +63,7 @@ bandSchema.pre('remove', async function() {
     await mongoose.model('Album').deleteMany({ _id: { $in: this.albums }});
 
     //go get every member who was a part of this band and delete their history with the band
-    await mongoose.model('Artist').updateMany({ _id: { $in: this.members }}, { $pull: { history: { band: this._id }}});
+    await mongoose.model('Artist').updateMany({ _id: { $in: this.members }}, { $pull: { bands: { band: this._id }}});
 });
 
 module.exports = mongoose.model('Band', bandSchema);
