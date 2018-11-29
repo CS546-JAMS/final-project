@@ -16,16 +16,16 @@ const albumSchema = new mongoose.Schema({
         ref: 'Song'
     }],
     genre: {
-        type: String,
-        set: function(newGenre) { //provide custom state to use in the updating, again we use 'this' so can't use arrow functions
-            if(this.isNew) //keep track of the last genre and the one before that
-                this._memory = newGenre;
-            else {
-                this._previousGenre = this._memory;
-                this._memory = newGenre;
-            }
-            return newGenre;
-        } 
+        type: String
+        // set: function(newGenre) { //provide custom state to use in the updating, again we use 'this' so can't use arrow functions
+        //     if(this.isNew) //keep track of the last genre and the one before that
+        //         this._memory = newGenre;
+        //     else {
+        //         this._previousGenre = this._memory;
+        //         this._memory = newGenre;
+        //     }
+        //     return newGenre;
+        // } 
     }
 });
 
@@ -37,13 +37,13 @@ albumSchema.pre('save', async function() {
         await mongoose.model('Band').updateOne({ _id: this.band }, { $addToSet: { albums: this._id, genres: this.genre }});
     }
     else if(this.modifiedPaths().includes('genre')) {
-        //handle the removal of the old genre
         //consider replacing with { 'Classic Rock': 2, 'Metal': 1 } on band and decrementing / incrementing 
         //to avoid having to query the whole set
-        const sameGenre = await mongoose.model('Album').find({ band: this.band, genre: this._previousGenre });
+        const old = await mongoose.model('Album').findById(this._id); //again, not the best way to do it
+        const sameGenre = await mongoose.model('Album').find({ band: this.band, genre: old.genre });
         await mongoose.model('Band').updateOne({ _id: this.band }, { $addToSet: { genres: this.genre }});
         if (sameGenre.length < 2) { //we don't have another of the same, pull it from the 
-            await mongoose.model('Band').updateOne({ _id: this.band }, { $pull: { genres: this._previousGenre }});
+            await mongoose.model('Band').updateOne({ _id: this.band }, { $pull: { genres: old.genre }});
         }
     }
 });

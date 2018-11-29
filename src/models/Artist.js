@@ -23,17 +23,17 @@ const artistSchema = new mongoose.Schema({
         required: true
     },
     bands: [{ 
-        type: history,
-        set: async function(newBands) {
-            console.log('Set bands are: ' + newBands)
-            // if(this.isNew) //keep track of the last genre and the one before that
-            //     this._memory = newBands;
-            // else {
-            //     this._previousBands = this._memory;
-            //     this._memory = newBands;
-            // }
-            return newHistories;
-        }
+        type: history
+        // set: async function(newBands) {
+        //     console.log('Set bands are: ' + newBands)
+        //     // if(this.isNew) //keep track of the last genre and the one before that
+        //     //     this._memory = newBands;
+        //     // else {
+        //     //     this._previousBands = this._memory;
+        //     //     this._memory = newBands;
+        //     // }
+        //     return newHistories;
+        // }
     }],
     birth: {
         type: String,
@@ -51,9 +51,16 @@ artistSchema.pre('save', async function() {
         await mongoose.model('Band').updateMany({ _id: { $in: bands }},  { $addToSet: { members: this._id }});
     }
     else if(this.modifiedPaths().includes('bands')) {
-        //handle updating using memory, use same set difference method
-        // const previousBands = new Set(this._previousBands);
-        // const newBands = new Set(this.bands);
+        const old = mongoose.model('Artist').findById(this._id);
+
+        const previousBands = new Set(old.toObject().bands.map((h) => { return h.band }));
+        const newBands = new Set(this.toObject().bands.map((h) => { return h.band })); //deposit on document to avoid 2 calls
+
+        const removals = [...previousBands].filter(m => !newBands.has(m));
+        const additions = [...newBands].filter(m => !previousBands.has(m));
+
+        await mongoose.model('Band').updateMany({ _id: { $in: removals }}, { $pull: { members: this._id }});
+        await mongoose.model('Band').updateMany({ _id: { $in: additions }}, { $addToSet: { members: this._id }});
     }
 });
 
