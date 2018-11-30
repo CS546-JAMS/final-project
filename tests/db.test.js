@@ -11,23 +11,13 @@ const shallowCopy = (obj) => {
     return Object.assign({}, obj);
 }
 
-const dumpDb = async () => {
-    const fs = require('fs');
-    let out = {};
-    out.Songs = await ops.getAll('song');
-    out.Albums = await ops.getAll('album');
-    out.Bands = await ops.getAll('band');
-    out.Artists = await ops.getAll('artist');
-    fs.writeFile('out.json', JSON.stringify(out, null, 4)); //pretty print out file
-}
-
-beforeEach(() => {
+beforeEach(async () => {
     data = deepCopy(seedData);
-    conn.dropDatabase();
+    await conn.dropDatabase();
 });
 
 afterAll(async () => {
-    await dumpDb();
+    await conn.dumpDb();
     conn.disconnect();
 });
 
