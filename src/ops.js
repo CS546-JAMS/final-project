@@ -1,8 +1,11 @@
+//TODO: eliminate this file, move functions into test.js
+
 const models = {
     'song': require('./models/Song'),
     'album': require('./models/Album'),
     'band': require('./models/Band'),
-    'artist': require('./models/Artist')
+    'artist': require('./models/Artist'),
+    'genre': require('./models/Genre')
 }
 
 const _assureSchema = (schema) => {
@@ -37,7 +40,7 @@ const removeById = async (schema, id) => {
 
 const getAll = async (schema) => {
     _assureSchema(schema);
-    return await models[schema].find({});
+    return models[schema].find({});
 }
 
 const getById = async (schema, id) => {
