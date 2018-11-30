@@ -17,21 +17,15 @@ const albumSchema = new mongoose.Schema({
     }],
     genre: {
         type: String
-        // set: function(newGenre) { //provide custom state to use in the updating, again we use 'this' so can't use arrow functions
-        //     if(this.isNew) //keep track of the last genre and the one before that
-        //         this._memory = newGenre;
-        //     else {
-        //         this._previousGenre = this._memory;
-        //         this._memory = newGenre;
-        //     }
-        //     return newGenre;
-        // } 
     }
 });
 
 //check if it is new or an update, act accordingly
 //NOTE: CANNOT USE ARROW FUNCTIONS DUE TO 'THIS'
 albumSchema.pre('save', async function() {
+    //regardless of if it's new or not, push the new record, there is likely a more elegant way to keep track of this,
+    //but this is simple enough for now
+    await mongoose.model('Genre').updateOne({ title: this.genre }, { $addToSet: { bands: this.band }}, { upsert: true });
     if(this.isNew) {
         //it's new, add to band list
         await mongoose.model('Band').updateOne({ _id: this.band }, { $addToSet: { albums: this._id, genres: this.genre }});
@@ -39,11 +33,13 @@ albumSchema.pre('save', async function() {
     else if(this.modifiedPaths().includes('genre')) {
         //consider replacing with { 'Classic Rock': 2, 'Metal': 1 } on band and decrementing / incrementing 
         //to avoid having to query the whole set
+        //we don't need to do this synchronously, consider making a promise list and using Promise.all()
         const old = await mongoose.model('Album').findById(this._id); //again, not the best way to do it
         const sameGenre = await mongoose.model('Album').find({ band: this.band, genre: old.genre });
         await mongoose.model('Band').updateOne({ _id: this.band }, { $addToSet: { genres: this.genre }});
-        if (sameGenre.length < 2) { //we don't have another of the same, pull it from the 
+        if (sameGenre.length < 2) { //we don't have another of the same, pull it from the genre list
             await mongoose.model('Band').updateOne({ _id: this.band }, { $pull: { genres: old.genre }});
+            await mongoose.model('Genre').updateOne({ title: this.genre}, { $pull: { bands: this.band }});
         }
     }
 });
@@ -57,8 +53,10 @@ albumSchema.pre('remove', async function() {
 
     //pull album genre from band on remove -- again, consider decrement method to avoid large query
     const sameGenre = await mongoose.model('Album').find({ genre: this.genre });
-    if(sameGenre.length < 2) //we don't have another of the same genre, pull genre from band
+    if(sameGenre.length < 2) { //we don't have another of the same genre, pull genre from band, also pull band from genre list
         await mongoose.model('Band').updateOne({ _id: this.band }, { $pull: { genres: this.genre }});
+        await mongoose.model('Genre').updateOne({ title: this.genre}, { $pull: { bands: this.band }});
+    }
 });
 
 module.exports = mongoose.model('Album', albumSchema)

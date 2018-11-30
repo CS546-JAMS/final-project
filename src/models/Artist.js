@@ -24,16 +24,6 @@ const artistSchema = new mongoose.Schema({
     },
     bands: [{ 
         type: history
-        // set: async function(newBands) {
-        //     console.log('Set bands are: ' + newBands)
-        //     // if(this.isNew) //keep track of the last genre and the one before that
-        //     //     this._memory = newBands;
-        //     // else {
-        //     //     this._previousBands = this._memory;
-        //     //     this._memory = newBands;
-        //     // }
-        //     return newHistories;
-        // }
     }],
     birth: {
         type: String,
