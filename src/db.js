@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const fs = require('fs');
 
 const server = '127.0.0.1:27017';
 const db = 'final-project';
@@ -33,6 +34,15 @@ class Database {
             .then(() => { 
                 //console.log('Bye!'); 
             });
+    }
+
+    dumpDb() {
+        let out = {};
+        let promises = [];
+        const models = ['Song', 'Genre', 'Band', 'Artist', 'Album'];
+        
+        models.forEach((model) => { promises.push(mongoose.model(model).find({}).then((data) => { out[model] = data }))});
+        return Promise.all(promises).then(() => { fs.writeFile('out.json', JSON.stringify(out, null, 4)) }); //pretty print out file
     }
 };
 
