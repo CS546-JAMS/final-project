@@ -1,18 +1,14 @@
 const ops = require('../src/ops');
 const conn = require('../src/db');
-const seedData = require('../utils/seed_data.json');
-let data; //copy of seedData to be reset on each run
+const data = require('../utils/seed_data.json');
+//let data = seedData; //copy of seedData to be reset on each run
 
 const deepCopy = (obj) => {
     return JSON.parse(JSON.stringify(obj)); //make a new deep copy for each run to avoid aliasing
 }
 
-const shallowCopy = (obj) => {
-    return Object.assign({}, obj);
-}
-
 beforeEach(async () => {
-    data = deepCopy(seedData);
+    //data = deepCopy(seedData);
     await conn.dropDatabase();
 });
 
@@ -103,7 +99,7 @@ test('Delete a genre with 2 supporting albums, make sure band does not reflect g
     params.band = bandEntry._id;
     const firstAlbum = await ops.insert('album', params);
 
-    params = shallowCopy(data.Albums[1]);
+    params = { ...data.Albums[1]};
     params.band = bandEntry._id;
     params.genre = firstAlbum.genre;
     const secondAlbum = await ops.insert('album', params);
@@ -121,7 +117,7 @@ test('Insert two albums with the same genre, assure they do not double up', asyn
     params.band = bandEntry._id;
     const firstAlbum = await ops.insert('album', params);
 
-    params = shallowCopy(data.Albums[1]);
+    params = { ...data.Albums[1] }
     params.band = bandEntry._id;
     params.genre = firstAlbum.genre; //match the two genres, overwrites the object because of alias
     const secondAlbum = await ops.insert('album', params);
@@ -140,7 +136,7 @@ test('Insert two albums with the same genre, delete one, assure genre stays on b
     params.band = bandEntry._id;
     const firstAlbum = await ops.insert('album', params);
 
-    params = shallowCopy(data.Albums[1]);
+    params = { ...data.Albums[1] }
     params.genre = firstAlbum.genre; //match the two genres
     params.band = bandEntry._id;
     const secondAlbum = await ops.insert('album', params);
@@ -179,7 +175,7 @@ test('Update an album, ensure it creates a new genre', async () => {
     params.band = bandEntry._id;
     const firstAlbum = await ops.insert('album', params);
 
-    params = shallowCopy(data.Albums[1]);
+    params = { ...data.Albums[1] }
     params.band = bandEntry._id;
     params.genre = firstAlbum.genre; //match the two genres, overwrites the object because of alias
     const secondAlbum = await ops.insert('album', params);
@@ -254,4 +250,72 @@ test('Update the members of a band, assure that the histories get updated', asyn
     expect(res.bands.length).toBe(1);
     res = await ops.getById('artist', otherArtistEntry._id);
     expect(res.bands.length).toBe(0);
+});
+
+test('Add a band to a genre', async() => {
+    let params;
+    params = data.Bands[0];
+    const bandEntry = await ops.insert('band', params);
+
+    params = { ...data.Albums[0] }; //shallow copy w/ spread syntax
+    params.band = bandEntry._id;
+    const albumEntry = await ops.insert('album', params);
+
+    const res = await ops.getByParams('genre', { title: albumEntry.genre });
+    expect(res.length).toBe(1);
+    expect(res[0].title).toBe(albumEntry.genre);
+});
+
+test('Remove a band from a genre', async() => {
+    let params;
+    params = data.Bands[0];
+    const bandEntry = await ops.insert('band', params);
+
+    params = { ...data.Albums[0] };
+    params.band = bandEntry._id;
+    const albumEntry = await ops.insert('album', params);
+
+    await ops.removeById('album', albumEntry._id);
+    const res = await ops.getByParams('genre', { title: albumEntry.genre })
+    expect(res.length).toBe(0);
+})
+
+test('Add a band to multiple genres', async() => {
+    let params;
+    params = data.Bands[0];
+    const bandEntry = await ops.insert('band', params);
+
+    params = { ...data.Albums[0] };
+    params.band = bandEntry._id;
+    const albumEntry = await ops.insert('album', params);
+
+    params = { ...data.Albums[1] };
+    params.band = bandEntry._id;
+    const otherAlbumEntry = await ops.insert('album', params);
+
+    const res = await ops.getByParams('genre', { title: albumEntry.genre });
+    const otherRes = await ops.getByParams('genre', { title: otherAlbumEntry.genre });
+    expect(res[0].bands.length).toBe(1);
+    expect(res[0].bands[0]).toEqual(bandEntry._id);
+
+    expect(otherRes[0].bands.length).toBe(1);
+    expect(otherRes[0].bands[0]).toEqual(bandEntry._id);
+})
+
+test('Add multiple bands to a genre', async() => {
+    let params;
+    params = data.Bands[0];
+    const bandEntry = await ops.insert('band', params);
+    params.name = "Dummy Band";
+    const otherBandEntry = await ops.insert('band', params);
+
+    params = { ...data.Albums[0] };
+    params.band = bandEntry._id;
+    const albumEntry = await ops.insert('album', params);
+    params.band = otherBandEntry._id;
+    const otherAlbumEntry = await ops.insert('album', params);
+
+    const res = await ops.getByParams('genre', { title: albumEntry.genre });
+    expect(res.length).toBe(1);
+    expect(res[0].bands.length).toBe(2);
 });
