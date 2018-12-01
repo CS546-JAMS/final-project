@@ -9,6 +9,31 @@
             "title": "Use Your Illusion I",
             "songs": [],
             "genre": "Classic Rock"
+        },
+        {
+            "title": "Random Access Memories",
+            "songs": [],
+            "genre": "Electronic Funk"
+        },
+        {
+            "title": "Homework",
+            "songs": [],
+            "genre": "Electronic Funk"
+        },
+        {
+            "title": "Mr. Finish Line",
+            "songs": [],
+            "genre": "Funk"
+        },
+        {
+            "title": "IV",
+            "songs": [],
+            "genre": "Jazz"
+        },
+        {
+            "title": "Iridescence",
+            "songs": [],
+            "genre": "Hip Hop"
         }
     ],
     "Artists": [
@@ -32,6 +57,51 @@
                 }
             ],
             "birth": "02-06-1962"
+        },
+        {
+            "name": "Alexander Sowinski",
+            "bands": [
+                {
+                    "yearStart": 2010,
+                    "roles": ["Drums"]
+                }
+            ],
+            "birth": "04-01-1988"
+        },
+        {
+            "name": "Thomas Bangalter",
+            "bands": [
+                {
+                    "yearStart": 1992,
+                    "roles": ["Composer", "DJ"]
+                }
+            ],
+            "birth": "01-03-1975"
+        },
+        {
+            "name": "Kevin Abstract",
+            "bands": [
+                {
+                    "yearStart": 2009,
+                    "roles": ["Vocals"]
+                }
+            ],
+            "birth": "07-16-1996"
+        },
+        {
+            "name": "Theo Katzman",
+            "bands": [
+                {
+                    "yearStart": 2010,
+                    "roles": ["Vocals", "Guitar"]
+                },
+                {
+                    "yearStart": 2007,
+                    "yearEnd": 2010,
+                    "roles": ["Vocals"]
+                }
+            ],
+            "birth": "04-02-1986"
         }
     ],
     "Bands": [
@@ -41,6 +111,34 @@
             "members": [],
             "albums": [],
             "likes": 12879
+        },
+        {
+            "name": "Vulfpeck",
+            "genres": [],
+            "members": [],
+            "albums": [],
+            "likes": 5980
+        },
+        {
+            "name": "BADBADNOTGOOD",
+            "genres": [],
+            "members": [],
+            "albums": [],
+            "likes": 4337
+        },
+        {
+            "name": "Daft Punk",
+            "genres": [],
+            "members": [],
+            "albums": [],
+            "likes": 24011
+        },
+        {
+            "name": "BROCKHAMPTON",
+            "genres": [],
+            "members": [],
+            "albums": [],
+            "likes": 10456
         }
     ],
     "Genres": [],
@@ -79,6 +177,51 @@
             "title": "Perfect Crime",
             "lengthInSeconds": 143,
             "streams": 11274 
+        },
+        {
+            "title": "Birds of a Feather, We Rock Together",
+            "lengthInSeconds": 285,
+            "streams": 6428
+        },
+        {
+            "title": "Business Casual",
+            "lengthInSeconds": 183,
+            "streams": 3907
+        },
+        {
+            "title": "Vulf Pack",
+            "lengthInSeconds": 157,
+            "streams": 2265
+        },
+        {
+            "title": "Get Lucky",
+            "lengthInSeconds": 369,
+            "streams": 92635
+        },
+        {
+            "title": "Doin' It Right",
+            "lengthInSeconds": 251,
+            "streams": 65174
+        },
+        {
+            "title": "Around the World",
+            "lengthInSeconds": 424,
+            "streams": 51035
+        },
+        {
+            "title": "WEIGHT",
+            "lengthInSeconds": 260,
+            "streams": 23573
+        },
+        {
+            "title": "THUG LIFE",
+            "lengthInSeconds": 123,
+            "streams": 25090
+        },
+        {
+            "title": "Time Moves Slow",
+            "lengthInSeconds": 273,
+            "streams": 3846
         }
     ]
 }
