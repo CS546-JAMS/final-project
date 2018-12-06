@@ -75,7 +75,7 @@ module.exports = app => {
             .populate('albums', 'title genre')
             .populate('members', 'name bands.yearStart bands.yearEnd')
             .then((band) => {
-                res.status(200).send(band);
+                res.render('layouts/bandDetails', band);
             })
             .catch((err) => {
                 console.log(err);
