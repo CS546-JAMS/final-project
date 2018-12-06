@@ -1,0 +1,29 @@
+<h1>{{name}}</h1>
+<p>Likes: {{likes}}</p>
+
+{{#if genres}}
+<p>Genres</p>
+<ul>
+    {{#each genres}}
+        <li>{{this}}</li>
+    {{/each}}
+</ul>
+{{/if}}
+
+{{#if albums}}
+<p>Albums</p>
+<ul>
+    {{#each albums}}
+        <li>{{{link 'albums' this._id this.title}}}</li>
+    {{/each}}
+</ul>
+{{/if}}
+
+{{#if members}}
+<p>Members</p>
+<ul>
+    {{#each members}}
+        <li>{{this}}</li>
+    {{/each}}
+</ul>
+{{/if}}
