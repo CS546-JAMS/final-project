@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const bandSchema = new mongoose.Schema({
@@ -56,5 +57,7 @@ bandSchema.pre('remove', async function() {
     //go get every member who was a part of this band and delete their history with the band
     await mongoose.model('Artist').updateMany({ _id: { $in: this.members }}, { $pull: { bands: { band: this._id }}});
 });
+
+bandSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Band', bandSchema);
