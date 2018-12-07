@@ -2,7 +2,7 @@
     <h1>{{name}}</h1>
     <p>{{description}}</p>
     <hr>
-    <p>Likes: {{likes}}</p>
+    <p>Likes: {{{commatize likes}}}</p>
 
     {{#if genres}}
     <p>Genres</p>
@@ -17,7 +17,7 @@
     <p>Albums</p>
     <ul>
         {{#each albums}}
-            <li>{{{link 'albums' this._id this.title}}}</li>
+            <li>{{{link 'albums' this._id this.title false}}}</li>
         {{/each}}
     </ul>
     {{/if}}

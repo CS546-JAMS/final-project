@@ -1,0 +1,21 @@
+<div class="pushed-down">
+    {{#if this.songs}}
+        <h1>Today's top songs:</h1>
+        <ul class="no-bullet">
+            {{#each this.songs}}
+                <li>
+                    <h3>{{{link 'songs' this._id this.title false}}}</h3>
+                    <p>{{{commatize this.streams}}} {{{pluralize this.streams 'stream'}}}</p>
+                    <span>
+                        <small class="greyed-text">{{{timeInMinutes this.lengthInSeconds}}}</small>
+                        <span> | </span>
+                        <small class="greyed-text">{{{link 'albums' this.album._id this.album.title true}}}</small>
+                    </span>
+                </li>
+                <hr>
+            {{/each}}
+        </ul>
+    {{else}}
+        <h1>Hmmm... no songs found?</h1>
+    {{/if}}
+</div>

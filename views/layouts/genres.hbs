@@ -1,11 +1,11 @@
 <div class="pushed-down">
     {{#if genres}}
-        <h1>Some of our most popular genres:</h1>
+        <h1>Explore genres:</h1>
         <small class="greyed-text">We've probably got what you're looking for.</small>
         <ul class="no-bullet">
             {{#each genres}}
                 <li class="no-bullets">
-                    <h1>{{{link 'genres' this.title this.title}}}</h1>
+                    <h1>{{{link 'genres' this.title this.title false}}}</h1>
                     <p>
                         {{{commaString (linkList 'bands' this.bands)}}}
                     </p>

@@ -6,7 +6,7 @@
     <ul class="no-bullet">
         {{#each bands}}
             <li>
-                <h2>{{{link 'bands' this._id this.name}}}</h2>
+                <h2>{{{link 'bands' this._id this.name false}}}</h2>
                 <span>
                     {{#if genres}}
                         <small class="greyed-text">{{{commaString this.genres}}}</small>
@@ -15,7 +15,7 @@
                     {{/if}}
                     <span> | </span>
                     {{#if albums}}
-                        <small class="greyed-text">{{{descriptor albums 'album'}}}</small>
+                        <small class="greyed-text">{{{commatize (length albums)}}} {{{pluralize albums 'album'}}}{{!--{{{descriptor albums 'album'}}}--}}</small>
                     {{else}}
                         <small class="greyed-text">No albums...</small>
                     {{/if}}
