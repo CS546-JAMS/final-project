@@ -39,6 +39,10 @@ module.exports = app => {
             .catch((err) => handleErr(err, res));
     });
 
+    // for GET /albums we may want to include an update handler on the songs schema
+    // that checks if the modified path includes the streams.  If it does, get the current
+    // stream count for the album, subtract it by the previous stream amount, and add it by the current
+    // stream amount.
     app.get('/albums/:id', (req, res) => {
         //return an album page
         mongoose.model('Album').findById(req.params.id)
@@ -92,6 +96,26 @@ module.exports = app => {
                 res.status(200).send(bands);
             })
             .catch((err) => handleErr(err, res));
+    });
+
+    app.get('/songs/', (req, res) => {
+        //return most popular songs
+        mongoose.model('Song').find({})
+            .sort({'streams': -1})
+            .limit(10)
+            .populate('album', 'title')
+            .then((songs) => {
+                res.render('layouts/songs', { songs })
+            })
+            .catch((err) => handleErr(err, res));
+    });
+
+    //songs/:id only available via search, must implement
+
+    app.get('/search', (req, res) => {
+        //validate in case they tried to run around the form, return a list page that is returned from the db.  If it's empty
+        //return a generic error page
+        res.send(req.query);
     });
 
 }
