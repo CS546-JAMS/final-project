@@ -1,22 +1,32 @@
 module.exports = {
 
-    link: (type, id, text) => {
+    link: (type, id, text, greyed) => {
         const url = encodeURI(`/${type}/${id}`)
+        if(greyed)
+            return `<a class="greyed-text" href="${url}">${text}</a>`
         return `<a href="${url}">${text}</a>`
+    },
+
+    lowercase: (str) => {
+        return str.toLowerCase();
     },
     
     commaString: (lst) => {
         return lst.join(', ')
     },
 
-    descriptor: (lst, name) => {
-        if(lst.length === 1)
-            return `${lst.length} ${name}`
-        return `${lst.length} ${name}s`
+    length: (lst) => {
+        return lst.length
+    },
+
+    pluralize: (num, name) => {
+        if(num === 1)
+            return `${name}`
+        return `${name}s`
     },
 
     timeInMinutes: (seconds) => {
-        return `${Math.floor(seconds / 60)}:${seconds % 60}`
+        return `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`
     },
 
     commatize: (num) => {
