@@ -1,2 +1,32 @@
-<h1>Bands</h1>
-
+<div class="pushed-down">
+    {{#if bands}}
+    <h1>Top bands of this week:</h1>
+    <small class="greyed-text">Warning - these bands are HOT</small>
+    <ul class="no-bullet">
+        {{#each bands}}
+            <li>
+                <h2>{{{link 'bands' this._id this.name}}}</h2>
+                <span>
+                    {{#if genres}}
+                        <small class="greyed-text">{{{commaSepString this.genres}}}</small>
+                    {{else}}
+                        <small class="greyed-text">No genres found...</small>
+                    {{/if}}
+                    <span> | </span>
+                    {{#if albums}}
+                        <small class="greyed-text">{{{descriptor albums 'album'}}}</small>
+                    {{else}}
+                        <small class="greyed-text">No albums...</small>
+                    {{/if}}
+                    <span> | </span>
+                    <small class="greyed-text">{{this.likes}} likes</small>
+                    <hr>
+                </span>
+                <p>{{this.description}}</p>
+            </li>
+        {{/each}}
+    </ul>
+    {{else}}
+        <h1>We're all out of bands...awkward</h1>
+    {{/if}}
+</div>
