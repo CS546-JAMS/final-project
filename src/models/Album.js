@@ -17,6 +17,9 @@ const albumSchema = new mongoose.Schema({
     }],
     genre: {
         type: String
+    },
+    description: {
+        type: String
     }
 });
 

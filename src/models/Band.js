@@ -24,6 +24,9 @@ const bandSchema = new mongoose.Schema({
         validate: {
             validator: (v) => { return v >= 0 }
         }
+    },
+    description: {
+        type: String
     }
 });
 
