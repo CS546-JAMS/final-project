@@ -19,3 +19,7 @@ li {
     margin-top: 5%;
     margin-bottom: 5%;
 }
+
+a.greyed-text:hover {
+    color: #888;
+}
