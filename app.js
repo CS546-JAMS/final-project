@@ -1,29 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const handlebars = require("express-handlebars");
+const handlebars = require('express-handlebars');
+const helpers = require('./helpers');
 const port = 3000;
 const app = express();
 
-const hbs = handlebars.create({
-    helpers: {
-        link: (type, id, text) => {
-            return `<a href="/${type}/${id}">${text}</a>`
-        },
-        commaSepString: (lst) => {
-            return lst.join(', ')
-        },
-        length: (lst) => {
-            return lst.length
-        },
-        descriptor: (lst, name) => {
-            if(lst.length === 1)
-                return `${lst.length} ${name}`
-            return `${lst.length} ${name}s`
-        },
-        timeInMinutes: (seconds) => {
-            return `${Math.floor(seconds / 60)}:${seconds % 60}`
-        }
-    },
+const hbs = handlebars.create({ 
+    helpers,
     defaultLayout: "main",
     extname: ".hbs"
 })
