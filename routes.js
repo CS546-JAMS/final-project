@@ -14,9 +14,10 @@ const messages = (number) => {
     return { message: codes[number] };
 }
 
-const pretty = (s) => {
-    return JSON.stringify(s, null, 4);
-}
+const handleErr = (err, res) => {
+    console.log(err);
+    res.status(500).send(messages(500));
+};
 
 //TODO: Handle updating, posting, deleting
 module.exports = app => {
@@ -35,9 +36,7 @@ module.exports = app => {
             .then((artist) => {
                 res.status(200).send(artist);
             })
-            .catch((err) => {
-                res.status(500).send(messages(500));
-            })
+            .catch((err) => handleErr(err, res));
     });
 
     app.get('/albums/:id', (req, res) => {
@@ -47,10 +46,7 @@ module.exports = app => {
             .then((album) => {
                 res.status(200).send(album);
             })
-            .catch((err) => {
-                console.log(err);
-                res.status(500).send(messages(500));
-            })
+            .catch((err) => handleErr(err, res));
     });
 
     app.get('/bands', (req, res) => {
@@ -62,10 +58,7 @@ module.exports = app => {
             .then((bands) => {
                 res.render('layouts/bands', { bands }); //sending in as-is results in undefined behavior, use implied object naming 
             })
-            .catch((err) => {
-                console.log(err);
-                res.status(500).send(messages(500));
-            })
+            .catch((err) => handleErr(err, res));
     });
 
     app.get('/bands/:id', (req, res) => {
@@ -76,10 +69,17 @@ module.exports = app => {
             .then((band) => {
                 res.render('layouts/bandDetails', band);
             })
-            .catch((err) => {
-                console.log(err);
-                res.status(500).send(messages(500));
+            .catch((err) => handleErr(err, res));
+    });
+
+    app.get('/genres', (req, res) => {
+        mongoose.model('Genre').find({}) //TODO: sort on size (popularity) of the array
+            .limit(10)
+            .populate('bands', 'name')
+            .then((genres) => {
+                res.render('layouts/genres', { genres }) //again assign to { genres: obj } to avoid mucking up 'this'
             })
+            .catch((err) => handleErr(err, res));
     });
 
     app.get('/genres/:name', (req, res) => {
@@ -91,10 +91,7 @@ module.exports = app => {
             .then((bands) => {
                 res.status(200).send(bands);
             })
-            .catch((err) => {
-                console.log(err);
-                res.status(500).send(messages(500));
-            })
+            .catch((err) => handleErr(err, res));
     });
 
 }
