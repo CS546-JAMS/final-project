@@ -36,7 +36,6 @@ module.exports = app => {
                 res.status(200).send(artist);
             })
             .catch((err) => {
-                console.log(err);
                 res.status(500).send(messages(500));
             })
     });
@@ -61,7 +60,7 @@ module.exports = app => {
             .sort({'likes': -1}) //descending order
             .limit(10)
             .then((bands) => {
-                res.status(200).send(bands);
+                res.render('layouts/bands', { bands }); //sending in as-is results in undefined behavior, use implied object naming 
             })
             .catch((err) => {
                 console.log(err);
