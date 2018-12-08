@@ -39,10 +39,19 @@ module.exports = app => {
             .catch((err) => handleErr(err, res));
     });
 
-    // for GET /albums we may want to include an update handler on the songs schema
-    // that checks if the modified path includes the streams.  If it does, get the current
-    // stream count for the album, subtract it by the previous stream amount, and add it by the current
-    // stream amount.
+    app.get('/albums', (req, res) => {
+        //return most popular albums
+        mongoose.model('Album').find({})
+            .sort({'totalStreams': -1})
+            .limit(10)
+            .populate('band', 'name')
+            .populate('songs', 'title -_id')
+            .then(albums => {
+                res.render('layouts/albums', { albums });
+            })
+            .catch((err) => handleErr(err, res));
+    });
+
     app.get('/albums/:id', (req, res) => {
         //return an album page
         mongoose.model('Album').findById(req.params.id)
