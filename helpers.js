@@ -10,6 +10,11 @@ module.exports = {
     lowercase: (str) => {
         return str.toLowerCase();
     },
+
+    //crush something like [{"title": "albumTitle"}, {"title": "otherTitle"}] into ["albumTitle", "otherTitle"]
+    crush: (objArr, field) => {
+        return objArr.map(obj => {return obj[field]});
+    },
     
     commaString: (lst) => {
         return lst.join(', ')
