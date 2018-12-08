@@ -20,6 +20,13 @@ const albumSchema = new mongoose.Schema({
     },
     description: {
         type: String
+    },
+    totalStreams: {
+        type: Number,
+        default: 0,
+        validate: {
+            validator: (v) => { return v >= 0 }
+        }
     }
 });
 
@@ -30,7 +37,6 @@ albumSchema.pre('save', async function() {
     //but this is simple enough for now
     await mongoose.model('Genre').updateOne({ title: this.genre }, { $addToSet: { bands: this.band }}, { upsert: true });
     if(this.isNew) {
-        //it's new, add to band list
         await mongoose.model('Band').updateOne({ _id: this.band }, { $addToSet: { albums: this._id, genres: this.genre }});
     }
     else if(this.modifiedPaths().includes('genre')) {
