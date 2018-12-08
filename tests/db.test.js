@@ -319,3 +319,68 @@ test('Add multiple bands to a genre', async() => {
     expect(res.length).toBe(1);
     expect(res[0].bands.length).toBe(2);
 });
+
+test('Observe the updating of the total streams of an album', async() => {
+    let params;
+    params = data.Bands[0];
+    const bandEntry = await ops.insert('band', params);
+
+    params = data.Albums[0];
+    params.band = bandEntry._id;
+    const albumEntry = await ops.insert('album', params);
+
+    params = data.Songs[0];
+    params.album = albumEntry._id;
+    const songEntry = await ops.insert('song', params);
+
+    params = data.Songs[1];
+    params.album = albumEntry._id;
+    const otherSongEntry = await ops.insert('song', params);
+
+    const res = await ops.getById('album', albumEntry._id);
+    expect(res.totalStreams).toBe(songEntry.streams + otherSongEntry.streams);
+});
+
+test('Remove a song, observe the decrement of the streams of an album', async() => {
+    let params;
+    params = data.Bands[0];
+    const bandEntry = await ops.insert('band', params);
+
+    params = data.Albums[0];
+    params.band = bandEntry._id;
+    const albumEntry = await ops.insert('album', params);
+
+    params = data.Songs[0];
+    params.album = albumEntry._id;
+    const songEntry = await ops.insert('song', params);
+
+    params = data.Songs[1];
+    params.album = albumEntry._id;
+    const otherSongEntry = await ops.insert('song', params);
+    await ops.removeById('song', otherSongEntry._id);
+
+    const res = await ops.getById('album', albumEntry._id);
+    expect(res.totalStreams).toBe(songEntry.streams);
+});
+
+test('Update a song, observe the change in streams of the album', async() => {
+    let params;
+    params = data.Bands[0];
+    const bandEntry = await ops.insert('band', params);
+
+    params = data.Albums[0];
+    params.band = bandEntry._id;
+    const albumEntry = await ops.insert('album', params);
+
+    params = data.Songs[0];
+    params.album = albumEntry._id;
+    const songEntry = await ops.insert('song', params);
+
+    params = data.Songs[1];
+    params.album = albumEntry._id;
+    const otherSongEntry = await ops.insert('song', params);
+    await ops.updateById('song', otherSongEntry._id, { streams: 100 });
+
+    const res = await ops.getById('album', albumEntry._id);
+    expect(res.totalStreams).toBe(songEntry.streams + 100);
+});
