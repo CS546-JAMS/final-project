@@ -120,11 +120,69 @@ module.exports = app => {
     });
 
     //songs/:id only available via search, must implement
+    app.get('/songs/:id', (req, res) => {
+        //return most popular songs
+        mongoose.model('Song').find({_id: req.params.id})
+        .populate('album', 'title',  'lengthInSeconds', 'streams')
+        .then((song) => {
+            res.render('layouts/songDetails', song);
+        })
+        .catch((err) => handleErr(err, res));
+    });
 
-    app.get('/search', (req, res) => {
+    app.post('/search', (req, res) => {
         //validate in case they tried to run around the form, return a list page that is returned from the db.  If it's empty
         //return a generic error page
-        res.send(req.query);
+        let searchingObject = req.body;
+        let query= searchingObject.q;
+        let qType = searchingObject.t;
+        console.log(searchingObject);
+        console.log(query);
+        console.log(qType);
+        if (!query) {
+            console.log("No query entered");
+            return -1;
+        }
+        if (qType === "Bands"){
+            console.log("Looking for Band");
+            foundBand = mongoose.model('Band').find({name: query}, function(err,obj) { 
+                console.log(obj[0]._id);
+                res.redirect("../bands/"+obj[0]._id);
+            });
+            return 0;
+        }
+        else if (qType === "Albums") {
+            console.log("Looking for Album");
+            foundBand = mongoose.model('Album').find({title: query}, function(err,obj) { 
+                console.log(obj[0]._id);
+                res.redirect("../albums/"+obj[0]._id);
+            });
+            return 0;
+        }
+        else if (qType === "Songs"){
+            console.log("Looking for Songs");
+            foundBand = mongoose.model('Song').find({title: query}, function(err,obj) { 
+                console.log(obj[0]._id);
+                res.redirect("../songs/"+obj[0]._id);
+            });
+            return 0;
+        }
+        else if (qType === "Artists"){
+            console.log("Looking for Artist");
+            foundBand = mongoose.model('Artist').find({name: query}, function(err,obj) { 
+                console.log(obj[0]._id);
+                res.redirect("../artists/"+obj[0]._id);
+            });
+            return 0;
+        }
+        else if(qType === "Genres"){
+            console.log("Looking for Genre");
+            foundBand = mongoose.model('Genre').find({title: query}, function(err,obj) { 
+                console.log(obj[0]._id);
+                res.redirect("../genres/"+obj[0]._id);
+            });
+            return 0;
+        }
     });
 
 }
