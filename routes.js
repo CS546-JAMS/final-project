@@ -146,43 +146,115 @@ module.exports = app => {
         if (qType === "Bands"){
             console.log("Looking for Band");
             foundBand = mongoose.model('Band').find({name: query}, function(err,obj) { 
-                console.log(obj[0]._id);
-                res.redirect("../bands/"+obj[0]._id);
+                if (Object.keys(obj).length<1){
+                    console.log("There are no bands with that name!");
+                }
+                else{
+                    console.log(obj[0]._id);
+                    res.redirect("../bands/"+obj[0]._id);
+                }
             });
             return 0;
         }
         else if (qType === "Albums") {
             console.log("Looking for Album");
             foundBand = mongoose.model('Album').find({title: query}, function(err,obj) { 
-                console.log(obj[0]._id);
-                res.redirect("../albums/"+obj[0]._id);
+                if (Object.keys(obj).length<1){
+                    console.log("There are no albums with that name!");
+                }
+                else{
+                    console.log(obj[0]._id);
+                    res.redirect("../albums/"+obj[0]._id);
+                }
             });
             return 0;
         }
         else if (qType === "Songs"){
             console.log("Looking for Songs");
-            foundBand = mongoose.model('Song').find({title: query}, function(err,obj) { 
-                console.log(obj[0]._id);
-                res.redirect("../songs/"+obj[0]._id);
+            foundBand = mongoose.model('Song').find({title: query}, function(err,obj) {
+                if (Object.keys(obj).length<1){
+                    console.log("There are no Songs with that name!");
+                }
+                else{ 
+                    console.log(obj[0]._id);
+                    res.redirect("../songs/"+obj[0]._id);
+                }
             });
             return 0;
         }
         else if (qType === "Artists"){
             console.log("Looking for Artist");
             foundBand = mongoose.model('Artist').find({name: query}, function(err,obj) { 
-                console.log(obj[0]._id);
-                res.redirect("../artists/"+obj[0]._id);
+                if (Object.keys(obj).length<1){
+                    console.log("There are no Artists with that name!");
+                }
+                else{
+                    console.log(obj[0]._id);
+                    res.redirect("../artists/"+obj[0]._id);
+                }
             });
             return 0;
         }
         else if(qType === "Genres"){
             console.log("Looking for Genre");
             foundBand = mongoose.model('Genre').find({title: query}, function(err,obj) { 
-                console.log(obj[0]._id);
-                res.redirect("../genres/"+obj[0]._id);
+                if (Object.keys(obj).length<1){
+                    console.log("There are no genres with that name!");
+                }
+                else{
+                    console.log(obj[0]._id);
+                    res.redirect("../genres/"+obj[0]._id);
+                }
             });
             return 0;
         }
     });
+
+    app.delete('/bands/:id', (req,res) => {
+        try {
+            mongoose.model("Band").findOneAndDelete({_id: req.params.id});
+            return 0
+          } catch (e) {
+            res.status(404).json({ error: "Band not found" });
+            return;
+          }
+    });
+    app.delete('/albums/:id', (req,res) => {
+        try {
+            mongoose.model("Album").findOneAndDelete({_id: req.params.id});
+            return 0
+          } catch (e) {
+            res.status(404).json({ error: "Album not found" });
+            return;
+          }
+    });
+    app.delete('/songs/:id', (req,res) => {
+        try {
+            mongoose.model("Song").findOneAndDelete({_id: req.params.id});
+            return 0
+          } catch (e) {
+            res.status(404).json({ error: "Song not found" });
+            return;
+          }
+    });
+    app.delete('/genres/:id', (req,res) => {
+        try {
+            mongoose.model("Genre").findOneAndDelete({_id: req.params.id});
+            return 0
+          } catch (e) {
+            res.status(404).json({ error: "Genre not found" });
+            return;
+          }
+    });
+    app.delete('/artists/:id', (req,res) => {
+        try {
+            mongoose.model("Artist").findOneAndDelete({_id: req.params.id});
+            return 0
+          } catch (e) {
+            res.status(404).json({ error: "Artist not found" });
+            return;
+          }
+    });
+    
 
 }
