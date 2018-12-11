@@ -121,13 +121,15 @@ module.exports = app => {
 
     //songs/:id only available via search, must implement
     app.get('/songs/:id', (req, res) => {
-        //return most popular songs
-        mongoose.model('Song').find({_id: req.params.id})
-        .populate('album', 'title',  'lengthInSeconds', 'streams')
-        .then((song) => {
-            res.render('layouts/songDetails', song);
-        })
-        .catch((err) => handleErr(err, res));
+        mongoose.model('Song').find({_id: req.params.id}, function(err,obj) { 
+            if (Object.keys(obj).length<1){
+                console.log("There are no songs with that id!");
+            }
+            else{
+                console.log(obj[0].album);
+                res.redirect("../albums/"+obj[0].album);
+            }
+        });
     });
 
     app.post('/search', (req, res) => {
@@ -177,7 +179,7 @@ module.exports = app => {
                 }
                 else{ 
                     console.log(obj[0]._id);
-                    res.redirect("../songs/"+obj[0]._id);
+                    res.redirect("../albums/"+obj[0].album);
                 }
             });
             return 0;
@@ -216,7 +218,7 @@ module.exports = app => {
             return 0
           } catch (e) {
             res.status(404).json({ error: "Band not found" });
-            return;
+            return -1;
           }
     });
     app.delete('/albums/:id', (req,res) => {
@@ -225,7 +227,7 @@ module.exports = app => {
             return 0
           } catch (e) {
             res.status(404).json({ error: "Album not found" });
-            return;
+            return -1;
           }
     });
     app.delete('/songs/:id', (req,res) => {
@@ -234,7 +236,7 @@ module.exports = app => {
             return 0
           } catch (e) {
             res.status(404).json({ error: "Song not found" });
-            return;
+            return -1;
           }
     });
     app.delete('/genres/:id', (req,res) => {
@@ -243,7 +245,7 @@ module.exports = app => {
             return 0
           } catch (e) {
             res.status(404).json({ error: "Genre not found" });
-            return;
+            return -1;
           }
     });
     app.delete('/artists/:id', (req,res) => {
@@ -252,7 +254,7 @@ module.exports = app => {
             return 0
           } catch (e) {
             res.status(404).json({ error: "Artist not found" });
-            return;
+            return -1;
           }
     });
     
