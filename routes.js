@@ -286,16 +286,6 @@ module.exports = app => {
         })
     });
 
-    app.delete('/genres/:id', (req,res) => {
-        mongoose.model("Genre").findOneAndDelete({_id: req.params.id})
-        .then(() => {
-            res.status(200).redirect('/genres');
-        })
-        .catch(() => {
-            res.status(404).send(messages(404));
-        })
-    });
-
     app.delete('/artists/:id', (req,res) => {
         mongoose.model("Artist").findOneAndDelete({_id: req.params.id})
             .then(() => {
