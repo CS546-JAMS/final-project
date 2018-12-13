@@ -120,88 +120,45 @@ module.exports = app => {
             .catch((err) => handleErr(err, res));
     });
 
-    app.get('/makeband', (req, res) => {
-        res.render('layouts/makeband');
-           
-    });
-//------------------------------
-
-      app.post("/artist-new", async (req, res) => {
-          const artistInfo = req.body;
-
-          if(!artistInfo){
-            res.status(400);
-            return;
-          }
-          newArtist = {
-              name: req.body['artist-name'],
-              birth: req.body['bday'], 
-              death: req.body['dday']
-          }
-          ops.insert('artist', newArtist)
-          .then((newArtist) => {
-            res.status(200).send(newArtist);
+    app.post("/artists", (req, res) => {
+        ops.insert('artist', newArtist)
+            .then((newArtist) => {
+                res.status(200).send(newArtist);
+            })
+            .catch((err) => {
+                res.status(400).send(messages(400));
             })
       });
       
-      app.post("/song-new", async (req, res) => {
-          const songInfo = req.body;
-
-          if(!songInfo){
-            res.status(400);
-            return;
-          }
-
-          newSong = {
-              title: req.body['song-title'],
-              lengthInSeconds: req.body['song-len']
-          }
-          ops.insert('song', newSong)
-          .then((newSong) => {
-            res.status(200).send(newSong);
+    app.post("/songs", (req, res) => {
+        ops.insert('song', req.body)
+            .then((song) => {
+                res.status(200).send(song);
+            })
+            .catch((err) => {
+                res.status(400).send(messages(400));
             })
       });
 
-      app.post("/album-new", async (req, res) => {
-        const albumInfo = req.body;
-
-        if(!albumInfo){
-          res.status(400);
-          return;
-        }
-
-        newAlbum = {
-            title: req.body['album-title']
-        }
-        ops.insert('album', newAlbum)
-        .then((newAlbum) => {
-            res.status(200).send(newAlbum);
+    app.post("/albums", (req, res) => {
+        ops.insert('album', req.body)
+            .then((album) => {
+                res.status(200).send(album);
+            })
+            .catch((err) => {
+                res.status(400).send(messages(400));
             })
     });
 
-    app.post("/band-new", async (req, res) => {
-        const bandInfo = req.body;
-
-        if(!bandInfo){
-          res.status(400);
-          return;
-        }
-
-        newBand = {
-            name: req.body['band-name'],
-            description: req.body['band-desc'],
-            genre: req.body['genre-title']
-        }
-        ops.insert('band', newBand)
-        .then((newBand) => {
-          res.status(200).send(newBand);
-          })
+    app.post("/bands", (req, res) => {
+        ops.insert('band', req.body)
+            .then((band) => {
+                res.status(200).send(band);
+            })
+            .catch((err) => {
+                res.status(400).send(messages(400));
+            })
     });
-
-
-//----------------------------------------
-
-    //songs/:id only available via search, must implement
 
     app.get('/search', (req, res) => {
         //validate in case they tried to run around the form, return a list page that is returned from the db.  If it's empty
