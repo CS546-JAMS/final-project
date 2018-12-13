@@ -10,6 +10,15 @@ Howdy, this is our submission for the final project for Web Programming I at Ste
 - View information about bands such as their albums, the songs on each album, and the members of the band
 - Enter new bands with auto-generated names
 
+## For Professors and Other People Needing to Run This
+Firstly, `git clone` and `cd` into the project directory.  Then hit us with an `npm install` to get your dependencies straightened out.  After that, please run a `npm run seed` to generate the test database.  After that, you may want to run an `npm test` just to make sure your system is working correctly.
+
+Once you get the green light from Jest, feel free to start it up with an `npm start` and head on over to `localhost:3000`.  Once there, click around and explore!
+
+If we were to continue this project, we'd love to:
+- Separate all requests into an API and a web server sending out SPAs w/ React.  This way, we could have a fully RESTful API without Handlebars jumping in the way and forcing us to return HTML on GET requests instead of JSON.
+- Switch to React on client-side.  Works well with the above, as we can just make requests to the API via fetch or Ajax, keeping everything very loosely coupled.  This would also give us a ton of flexibility regarding state management.
+
 ## Rules of the Craft
 
 ### Style Guide
