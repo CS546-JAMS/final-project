@@ -1,6 +1,7 @@
 const ops = require('./src/ops');
 const conn = require('./src/db');
 const mongoose = require('mongoose');
+
 //we can pass in more options to populate to tune
 //exactly what we want to return
 
@@ -111,13 +112,94 @@ module.exports = app => {
         //return most popular songs
         mongoose.model('Song').find({})
             .sort({'streams': -1})
-            .limit(10)
+            .limit(100)
             .populate('album', 'title')
             .then((songs) => {
                 res.render('layouts/songs', { songs })
             })
             .catch((err) => handleErr(err, res));
     });
+
+    app.get('/makeband', (req, res) => {
+        res.render('layouts/makeband');
+           
+    });
+//------------------------------
+
+      app.post("/artist-new", async (req, res) => {
+          const artistInfo = req.body;
+
+          if(!artistInfo){
+            res.status(400);
+            return;
+          }
+          newArtist = {
+              name: req.body['artist-name'],
+              birth: req.body['bday'], 
+              death: req.body['dday']
+          }
+          ops.insert('artist', newArtist)
+          .then((newArtist) => {
+            res.status(200).send(newArtist);
+            })
+      });
+      
+      app.post("/song-new", async (req, res) => {
+          const songInfo = req.body;
+
+          if(!songInfo){
+            res.status(400);
+            return;
+          }
+
+          newSong = {
+              title: req.body['song-title'],
+              lengthInSeconds: req.body['song-len']
+          }
+          ops.insert('song', newSong)
+          .then((newSong) => {
+            res.status(200).send(newSong);
+            })
+      });
+
+      app.post("/album-new", async (req, res) => {
+        const albumInfo = req.body;
+
+        if(!albumInfo){
+          res.status(400);
+          return;
+        }
+
+        newAlbum = {
+            title: req.body['album-title']
+        }
+        ops.insert('album', newAlbum)
+        .then((newAlbum) => {
+            res.status(200).send(newAlbum);
+            })
+    });
+
+    app.post("/band-new", async (req, res) => {
+        const bandInfo = req.body;
+
+        if(!bandInfo){
+          res.status(400);
+          return;
+        }
+
+        newBand = {
+            name: req.body['band-name'],
+            description: req.body['band-desc'],
+            genre: req.body['genre-title']
+        }
+        ops.insert('band', newBand)
+        .then((newBand) => {
+          res.status(200).send(newBand);
+          })
+    });
+
+
+//----------------------------------------
 
     //songs/:id only available via search, must implement
 
