@@ -24,6 +24,12 @@ module.exports = app => {
     app.get('/', (req, res) => {
         //return a dashboard, lists most popular bands of the month and,
         //big songs of the month, and big albums of the month
+        
+        //we also want to render a form here to enter in new information.  This should have some fairly dynamic stuff, just store the different
+        //form documents in memory, and according to a selector, render the form inside of a div.  Each form will have a different action.
+
+        //in the case that a name has been taken -- check serverside.  If it is taken, perform a redirect with a queryparam setting query.taken = true.
+        //check for this when the route gets hit for a GET, if it is there, render some extra stuff on the bottom of the page.
         res.status(200).send('Under construction');
     });
 
@@ -203,16 +209,16 @@ module.exports = app => {
             Genres: {
                 multi: {
                     layout: 'genres',
-                    search: (name) => { 
-                        return mongoose.model('Genre').find({ name })
+                    search: (title) => { 
+                        return mongoose.model('Genre').find({ title })
                             .limit(10)
                             .populate('bands', 'name')
                     }
                 },
                 single: {
                     layout: 'genreDetails',
-                    search: (name) => { 
-                        return mongoose.model('Genre').findOne({ name })
+                    search: (title) => { 
+                        return mongoose.model('Genre').findOne({ title })
                             .populate('bands', 'name likes') //retrieve only the band's name and likes
                             .sort('bands.likes')
                             .limit(10)
