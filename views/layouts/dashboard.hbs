@@ -1,0 +1,59 @@
+<h1>Trending Now</h1>
+{{#if bands}}
+    <ul class="no-bullet">
+        {{#each bands}}
+            <li>
+                <span>{{this.name}}</span>
+                {{#if this.likes}}
+                    <span> - </span>
+                    <span>
+                        <small class="greyed-text">{{{commatize this.likes}}} {{{pluralize this.likes 'like'}}}</small>
+                    </span>
+                {{/if}}
+            </li>
+        {{/each}}
+    </ul>
+{{/if}}
+<a href="/bands" class="btn btn-primary">Explore Bands</a>
+<hr>
+{{#if albums}}
+    <ul class="no-bullet">
+        {{#each albums}}
+            <li>
+                <span>{{this.title}}</span>
+                {{#if this.totalStreams}}
+                    <span> - </span>
+                    <span>
+                        <small class="greyed-text">{{{commatize this.totalStreams}}} {{{pluralize this.totalStreams 'stream'}}}</small>
+                    </span>   
+                {{/if}}
+                <div>
+                    <small class="greyed-text">{{this.band.name}}</small>
+                </div>
+            </li>
+        {{/each}}
+    </ul>
+{{/if}}
+<a href="/albums" class="btn btn-primary">Explore Albums</a>
+<hr>
+{{#if songs}}
+    <ul class="no-bullet">
+        {{#each songs}}
+            <li>
+                <span>{{this.title}}</span>
+                {{#if this.streams}}
+                    <span> - </span>
+                    <span>
+                        <small class="greyed-text">{{{commatize this.streams}}} {{{pluralize this.streams 'stream'}}}</small>
+                    </span>   
+                {{/if}}
+                <div>
+                    <small class="greyed-text">{{this.album.title}}</small>
+                </div>
+            </li>
+            
+        {{/each}}
+    </ul>
+{{/if}}
+<a href="/songs" class="btn btn-primary">Explore Songs</a>
+<hr>

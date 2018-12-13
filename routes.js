@@ -32,7 +32,28 @@ module.exports = app => {
 
         //in the case that a name has been taken -- check serverside.  If it is taken, perform a redirect with a queryparam setting query.taken = true.
         //check for this when the route gets hit for a GET, if it is there, render some extra stuff on the bottom of the page.
-        res.status(200).send('Under construction');
+        const out = {}
+        const bands = mongoose.model('Band').find({})
+            .sort({'likes': -1}) //descending order
+            .limit(3)
+            .then((bands) => { out.bands = bands })
+
+        const albums = mongoose.model('Album').find({})
+            .sort({'totalStreams': -1})
+            .limit(3)
+            .populate('band', 'name')
+            .then((albums) => { out.albums = albums })
+
+        const songs = mongoose.model('Song').find({})
+            .sort({'streams': -1})
+            .limit(3)
+            .populate('album', 'title')
+            .then((songs) => { out.songs = songs })
+
+        Promise.all([bands, albums, songs])
+            .then(() => {
+                res.render('layouts/dashboard', out)
+            })
     });
 
     app.get('/artists/:id', (req, res) => {
@@ -110,8 +131,8 @@ module.exports = app => {
             .populate('bands', 'name likes') //retrieve only the band's name and likes
             .sort('bands.likes')
             .limit(10)
-            .then((bands) => {
-                res.status(200).send(bands);
+            .then((genres) => {
+                res.status(200).render('layouts/genreDetails', { genres })
             })
             .catch((err) => handleErr(err, res));
     });
@@ -120,7 +141,7 @@ module.exports = app => {
         //return most popular songs
         mongoose.model('Song').find({})
             .sort({'streams': -1})
-            .limit(100)
+            .limit(10)
             .populate('album', 'title')
             .then((songs) => {
                 res.render('layouts/songs', { songs })
