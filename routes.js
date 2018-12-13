@@ -119,6 +119,17 @@ module.exports = app => {
             })
             .catch((err) => handleErr(err, res));
     });
+  
+    app.get('/songs/:id', (req, res) => {
+          mongoose.model('Song').findById(req.params.id)
+              .then((song) => {
+                  return mongoose.model('Album').findById(song.album)
+                      .populate('songs')
+              })
+              .then((album) => {
+                  res.render('layouts/albumDetails', { album })
+              })
+              .catch((err) => handleErr(err, res));
 
     app.post('/artists', (req, res) => {
         ops.insert('artist', newArtist)
@@ -200,10 +211,167 @@ module.exports = app => {
             })
     });
 
-    app.get('/search', (req, res) => {
+    app.get('/search', async (req, res) => {
         //validate in case they tried to run around the form, return a list page that is returned from the db.  If it's empty
         //return a generic error page
-        res.send(req.query);
+        const type = req.query.t
+        const query = req.query.q
+
+        const types = {
+            Bands: {
+                multi: {
+                    layout: 'bands',
+                    search: (name) => { 
+                        return mongoose.model('Band').find({ name })
+                            .sort({'likes': -1}) //descending order
+                            .limit(10) 
+                    }
+                },
+                single: {
+                    layout: 'bandDetails',
+                    search: (name) => { 
+                        return mongoose.model('Band').findOne({ name }) 
+                            .populate('albums', 'title genre')
+                            .populate('members', 'name bands.yearStart bands.yearEnd') 
+                    }
+                },
+                count: (name) => { return mongoose.model('Band').countDocuments({ name })}
+            },
+            Albums: {
+                multi: {
+                    layout: 'albums',
+                    search: (title) => { 
+                        return mongoose.model('Album').find({ title })
+                            .sort({'totalStreams': -1})
+                            .limit(10)
+                            .populate('band', 'name')
+                            .populate('songs', 'title -_id')
+                    }
+                },
+                single: {
+                    layout: 'albumDetails',
+                    search: (title) => { 
+                        return mongoose.model('Album').findOne({ title })
+                            .populate('songs')
+                    }
+                },
+                count: (title) => { return mongoose.model('Album').countDocuments({ title })}
+            },
+            Songs: {
+                multi: {
+                    layout: 'songs',
+                    search: (title) => { 
+                        return mongoose.model('Song').find({ title })
+                            .sort({'streams': -1})
+                            .limit(10)
+                            .populate('album', 'title')
+                    }
+                },  
+                single: {
+                    layout: 'albumDetails', //we don't use a song details page
+                    search: (title) => { 
+                        return mongoose.model('Song').findOne({ title })
+                            .then((song) => {
+                                return mongoose.model('Album').findById(song.album)
+                                    .populate('songs')
+                            })
+                    }
+                },
+                count: (title) => { return mongoose.model('Song').countDocuments({ title })}
+            },
+            Genres: {
+                multi: {
+                    layout: 'genres',
+                    search: (name) => { 
+                        return mongoose.model('Genre').find({ name })
+                            .limit(10)
+                            .populate('bands', 'name')
+                    }
+                },
+                single: {
+                    layout: 'genreDetails',
+                    search: (name) => { 
+                        return mongoose.model('Genre').findOne({ name })
+                            .populate('bands', 'name likes') //retrieve only the band's name and likes
+                            .sort('bands.likes')
+                            .limit(10)
+                    }
+                },
+                count: (title) => { return mongoose.model('Genre').countDocuments({ title })}
+            },
+            Artists: {
+                multi: {
+                    layout: 'artists',
+                    search: (name) => { 
+                        //TODO: need page
+                        return mongoose.model('Artist').find({ name })
+                    }
+                },
+                single: {
+                    layout: 'artistDetails',
+                    search: (name) => { 
+                        return mongoose.model('Artist').findOne({ name })
+                            .populate('bands.band')
+                    }
+                },
+                count: (name) => { return mongoose.model('Artist').countDocuments({ name })}
+            }
+        }
+        
+        if(type in types) {
+            const numberMatched = await types[type].count(query);
+            if(numberMatched === 1) {
+                const dbResponse = await types[type].single.search(query);
+                res.render(`layouts/${types[type].single.layout}`, dbResponse)            
+            }
+            else {
+                const dbResponse = await types[type].multi.search(query);
+                res.render(`layouts/${types[type].multi.layout}`, dbResponse)
+            } 
+        }
+        else {
+            //TODO: render error page
+            res.status(400).send(messages(400))
+        }
     });
 
+    app.delete('/bands/:id', (req,res) => {
+        mongoose.model("Band").findOneAndDelete({_id: req.params.id})
+        .then(() => {
+            res.status(200).redirect('/bands');
+        })
+        .catch(() => {
+            res.status(404).send(messages(404));
+        })
+    });
+
+    app.delete('/albums/:id', (req,res) => {
+        mongoose.model("Album").findOneAndDelete({_id: req.params.id})
+        .then(() => {
+            res.status(200).redirect('/albums');
+        })
+        .catch(() => {
+            res.status(404).send(messages(404));
+        })
+    });
+
+    app.delete('/songs/:id', (req,res) => {
+        mongoose.model("Song").findOneAndDelete({_id: req.params.id})
+        .then(() => {
+            res.status(200).redirect('/songs');
+        })
+        .catch(() => {
+            res.status(404).send(messages(404));
+        })
+    });
+
+    app.delete('/artists/:id', (req,res) => {
+        mongoose.model("Artist").findOneAndDelete({_id: req.params.id})
+            .then(() => {
+                res.status(200).redirect('/artists');
+            })
+            .catch(() => {
+                res.status(404).send(messages(404));
+            })
+    });    
 }
