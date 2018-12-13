@@ -1,0 +1,23 @@
+<h1>{{album.title}}</h1>
+<small class="greyed-text">
+    <span>{{{commatize (length album.songs) }}} {{{pluralize (length album.songs) 'song' }}}</span>
+    <span> | </span>
+    <span>{{{commatize album.totalStreams}}} total {{{pluralize album.totalStreams 'stream'}}}</span>
+</small>
+<p>by {{{link 'bands' album.band._id album.band.name false}}}</p>
+<p>{{album.description}}</p>
+{{#if album.songs}}
+<div class="pushed-down">
+    <h2>Track List:</h2>
+    <ul class="no-bullet">
+        {{#each album.songs}}
+            <li>
+                <h6>{{this.title}}</h6>
+                <small class="greyed-text">{{{timeInMinutes this.lengthInSeconds}}}</small>
+            </li>
+
+            <hr>
+        {{/each}}
+    </ul>
+</div>
+{{/if}}

@@ -1,25 +1,23 @@
-<div class="pushed-down">
-    {{#if albums}}
-    <h1>Today's top albums:</h1>
-    <small class="greyed-text">Our top albums based on the top streams</small>
-    <ul class="no-bullet">
-        {{#each albums}}
-            <li>
-                <h2>{{{link 'albums' this._id this.title false}}}</h2>
-                <p>by {{{link 'bands' this.band._id this.band.name true}}}</p>
-                <span>
-                    <small class="greyed-text">{{this.genre}}</small>
-                    <span> | </span>
-                    <small class="greyed-text">{{{commatize this.totalStreams}}} {{{pluralize this.totalStreams 'stream'}}}</small>
-                </span>
-                <div>
-                    <small class="greyed-text">Songlist: {{{commaString (crush this.songs 'title')}}}</small>
-                </div>
-            </li>
-            <hr>
-        {{/each}}
-    </ul>
-    {{else}}
-    <h1>No albums found...</h1>
-    {{/if}}
-</div>
+{{#if albums}}
+<h1>Today's top albums:</h1>
+<small class="greyed-text">Our top albums based on the top streams</small>
+<ul class="no-bullet">
+    {{#each albums}}
+        <li>
+            <h2>{{{link 'albums' this._id this.title false}}}</h2>
+            <p>by {{{link 'bands' this.band._id this.band.name true}}}</p>
+            <span>
+                <small class="greyed-text">{{this.genre}}</small>
+                <span> | </span>
+                <small class="greyed-text">{{{commatize this.totalStreams}}} {{{pluralize this.totalStreams 'stream'}}}</small>
+            </span>
+            <div>
+                <small class="greyed-text">Songlist: {{{commaString (crush this.songs 'title')}}}</small>
+            </div>
+        </li>
+        <hr>
+    {{/each}}
+</ul>
+{{else}}
+<h1>No albums found...</h1>
+{{/if}}

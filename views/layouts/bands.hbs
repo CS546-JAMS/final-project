@@ -1,33 +1,31 @@
-<div class="pushed-down">
-    {{#if bands}}
-    <h1>Top bands of this week:</h1>
-    <small class="greyed-text">Warning - these bands are HOT</small>
-    {{!-- Consider using {{#list}} instead, it abstracts this out --}}
-    <ul class="no-bullet">
-        {{#each bands}}
-            <li>
-                <h2>{{{link 'bands' this._id this.name false}}}</h2>
-                <span>
-                    {{#if genres}}
-                        <small class="greyed-text">{{{commaString this.genres}}}</small>
-                    {{else}}
-                        <small class="greyed-text">No genres found...</small>
-                    {{/if}}
-                    <span> | </span>
-                    {{#if albums}}
-                        <small class="greyed-text">{{{commatize (length albums)}}} {{{pluralize albums 'album'}}}{{!--{{{descriptor albums 'album'}}}--}}</small>
-                    {{else}}
-                        <small class="greyed-text">No albums...</small>
-                    {{/if}}
-                    <span> | </span>
-                    <small class="greyed-text">{{{commatize this.likes}}} likes</small>
-                    <hr>
-                </span>
-                <p>{{this.description}}</p>
-            </li>
-        {{/each}}
-    </ul>
-    {{else}}
-        <h1>We're all out of bands...awkward</h1>
-    {{/if}}
-</div>
+{{#if bands}}
+<h1>Top bands of this week:</h1>
+<small class="greyed-text">Warning - these bands are HOT</small>
+{{!-- Consider using {{#list}} instead, it abstracts this out --}}
+<ul class="no-bullet">
+    {{#each bands}}
+        <li>
+            <h2>{{{link 'bands' this._id this.name false}}}</h2>
+            <span>
+                {{#if genres}}
+                    <small class="greyed-text">{{{commaString this.genres}}}</small>
+                {{else}}
+                    <small class="greyed-text">No genres found...</small>
+                {{/if}}
+                <span> | </span>
+                {{#if albums}}
+                    <small class="greyed-text">{{{commatize (length albums)}}} {{{pluralize albums 'album'}}}{{!--{{{descriptor albums 'album'}}}--}}</small>
+                {{else}}
+                    <small class="greyed-text">No albums...</small>
+                {{/if}}
+                <span> | </span>
+                <small class="greyed-text">{{{commatize this.likes}}} likes</small>
+                <hr>
+            </span>
+            <p>{{this.description}}</p>
+        </li>
+    {{/each}}
+</ul>
+{{else}}
+    <h1>We're all out of bands...awkward</h1>
+{{/if}}
