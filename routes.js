@@ -136,6 +136,7 @@ module.exports = app => {
                   res.render('layouts/albumDetails', { album })
               })
               .catch((err) => handleErr(err, res));
+    });
 
     app.post('/artists', (req, res) => {
         ops.insert('artist', newArtist)
@@ -379,5 +380,5 @@ module.exports = app => {
             .catch(() => {
                 res.status(404).send(messages(404));
             })
-    });    
-}
+    });
+}    
