@@ -127,12 +127,12 @@ module.exports = app => {
 
     app.get('/genres/:name', (req, res) => {
         //return a list of the most popular bands in that genre
-        mongoose.model('Genre').find({ title: req.params.name })
-            .populate('bands', 'name likes') //retrieve only the band's name and likes
-            .sort('bands.likes')
+        mongoose.model('Genre').findOne({ title: req.params.name })
+            .populate('bands', 'name albums likes') //retrieve only the band's name and likes
+            .sort({'bands.likes': -1})
             .limit(10)
             .then((genres) => {
-                res.status(200).render('layouts/genreDetails', { genres })
+                res.render('layouts/genreDetails', genres);
             })
             .catch((err) => handleErr(err, res));
     });
@@ -331,7 +331,7 @@ module.exports = app => {
                     layout: 'genreDetails',
                     search: (title) => { 
                         return mongoose.model('Genre').findOne({ title })
-                            .populate('bands', 'name likes') //retrieve only the band's name and likes
+                            .populate('bands', 'name albums likes') //retrieve only the band's name and likes
                             .sort('bands.likes')
                             .limit(10)
                     }
