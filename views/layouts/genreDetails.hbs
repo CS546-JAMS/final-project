@@ -1,0 +1,22 @@
+<h1>{{title}}</h1>
+{{#if bands}}
+<div class="pushed-down">
+    <h2>Band List:</h2>
+    <ul class="no-bullet">
+        {{#each bands}}
+            <li>
+                <h5>{{this.name}}</h5>
+                <h6>Albums:</h6>
+                <ul class="no-bullet">
+                {{#each this.albums}}
+                <li>
+                    <small class="greyed-text">{{this.title}}</small>
+                </li>
+                {{/each}}
+                </ul>
+            </li>
+            <hr>
+        {{/each}}
+    </ul>
+</div>
+{{/if}}
