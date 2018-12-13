@@ -120,7 +120,7 @@ module.exports = app => {
             .catch((err) => handleErr(err, res));
     });
 
-    app.post("/artists", (req, res) => {
+    app.post('/artists', (req, res) => {
         ops.insert('artist', newArtist)
             .then((newArtist) => {
                 res.status(200).send(newArtist);
@@ -130,7 +130,7 @@ module.exports = app => {
             })
       });
       
-    app.post("/songs", (req, res) => {
+    app.post('/songs', (req, res) => {
         ops.insert('song', req.body)
             .then((song) => {
                 res.status(200).send(song);
@@ -140,7 +140,7 @@ module.exports = app => {
             })
       });
 
-    app.post("/albums", (req, res) => {
+    app.post('/albums', (req, res) => {
         ops.insert('album', req.body)
             .then((album) => {
                 res.status(200).send(album);
@@ -150,10 +150,50 @@ module.exports = app => {
             })
     });
 
-    app.post("/bands", (req, res) => {
+    app.post('/bands', (req, res) => {
         ops.insert('band', req.body)
             .then((band) => {
                 res.status(200).send(band);
+            })
+            .catch((err) => {
+                res.status(400).send(messages(400));
+            })
+    });
+
+    app.put('/bands/:id', (req, res) => {
+        ops.updateById('band', req.params.id, req.body)
+            .then((band) => {
+                res.status(200).send(band);
+            })
+            .catch((err) => {
+                res.status(400).send(messages(400));
+            })
+    });
+
+    app.put('/albums/:id', (req, res) => {
+        ops.updateById('album', req.params.id, req.body)
+            .then((album) => {
+                res.status(200).send(album);
+            })
+            .catch((err) => {
+                res.status(400).send(messages(400));
+            })
+    });
+
+    app.put('/songs/:id', (req, res) => {
+        ops.updateById('song', req.params.id, req.body)
+            .then((song) => {
+                res.status(200).send(song);
+            })
+            .catch((err) => {
+                res.status(400).send(messages(400));
+            })
+    });
+
+    app.put('/artists/:id', (req, res) => {
+        ops.updateById('artist', req.params.id, req.body)
+            .then((artist) => {
+                res.status(200).send(artist);
             })
             .catch((err) => {
                 res.status(400).send(messages(400));
