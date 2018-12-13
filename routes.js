@@ -1,6 +1,7 @@
 const ops = require('./src/ops');
 const conn = require('./src/db');
 const mongoose = require('mongoose');
+const generate = require('./generator');
 
 //we can pass in more options to populate to tune
 //exactly what we want to return
@@ -63,8 +64,9 @@ module.exports = app => {
         //return an album page
         mongoose.model('Album').findById(req.params.id)
             .populate('songs')
+            .populate('band', 'name')
             .then((album) => {
-                res.status(200).send(album);
+                res.status(200).render('layouts/albumDetails', { album });
             })
             .catch((err) => handleErr(err, res));
     });
@@ -85,7 +87,7 @@ module.exports = app => {
         //return a band's individual page
         mongoose.model('Band').findById(req.params.id)
             .populate('albums', 'title genre')
-            .populate('members', 'name bands.yearStart bands.yearEnd')
+            .populate('members', 'name bands.band bands.yearStart bands.yearEnd')
             .then((band) => {
                 res.render('layouts/bandDetails', band);
             })
@@ -174,7 +176,14 @@ module.exports = app => {
                 res.status(200).send(band);
             })
             .catch((err) => {
-                res.status(400).send(messages(400));
+                if(err.name === "MongoError") { //mongoose can't intercept this it seems, comes right from the driver
+                    const message = {
+                        message: "That band name is already taken.  Maybe try one of these?",
+                        names: [ generate(), generate(), generate() ] //sue me
+                    }
+                    res.status(400).send(message);
+                }
+                else res.status(400).send(messages(400));
             })
     });
 
@@ -239,7 +248,7 @@ module.exports = app => {
                     search: (name) => { 
                         return mongoose.model('Band').findOne({ name }) 
                             .populate('albums', 'title genre')
-                            .populate('members', 'name bands.yearStart bands.yearEnd') 
+                            .populate('members', 'name bands.band bands.yearStart bands.yearEnd') 
                     }
                 },
                 count: (name) => { return mongoose.model('Band').countDocuments({ name })}
@@ -260,6 +269,7 @@ module.exports = app => {
                     search: (title) => { 
                         return mongoose.model('Album').findOne({ title })
                             .populate('songs')
+                            .populate('band', 'name')
                     }
                 },
                 count: (title) => { return mongoose.model('Album').countDocuments({ title })}
@@ -280,7 +290,8 @@ module.exports = app => {
                         return mongoose.model('Song').findOne({ title })
                             .then((song) => {
                                 return mongoose.model('Album').findById(song.album)
-                                    .populate('songs')
+                                .populate('songs')
+                                .populate('band', 'name')
                             })
                     }
                 },
