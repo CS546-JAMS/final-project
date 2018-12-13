@@ -58,6 +58,7 @@ const updateById = async (schema, id, params) => {
     const doc = await models[schema].findById(id);
     doc.set(params); //need to inform mongoose of changes using this or manually using markModified()
     await doc.save();
+    return doc;
 }
 
 module.exports = {
