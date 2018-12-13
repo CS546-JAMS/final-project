@@ -1,0 +1,25 @@
+.pushed-down {
+    margin-top: 10%;
+}
+
+.greyed-text {
+    color: #888;
+}
+
+.centered {
+    text-align: center;
+}
+
+.no-bullet {
+    padding: 0;
+    list-style-type: none;
+}
+
+li {
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+a.greyed-text:hover {
+    color: #888;
+}

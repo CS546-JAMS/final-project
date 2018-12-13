@@ -47,4 +47,107 @@ git branch -d nameOfFeature
 ### Testing and Travis
 Unit and integration testing will be completed via Jest and Travis CI.  We will be providing documentation soon as to how to set this up in the project structure, as well as providing a `travis.yml` file for CI.
 
+## Document Models
+Advanced information on the models can be found in `src/models`.  We will also briefly define the document schemas here and provide some examples:
+
+### Band
+|   Field Name   |      Field Type      |
+|:---------------|:---------------------|
+| _id            | ObjectId             |
+| name           | String               |
+| genres         | List(String)         |
+| members        | List(ObjectId) (FK)  |
+| albums         | List(ObjectId) (FK)  |
+| likes          | Number               |
+
+``` javascript
+{
+    _id: 5bf31c40abbf7f4157db6ca6,
+    name: 'Guns N\' Roses',
+    genres: [ 'Rock' ],
+    members: [],
+    albums: [ 5bf31c40abbf7f4157db6ca7 ],
+    likes: 12879
+}
+```
+
+---
+
+### Album
+|   Field Name   |      Field Type      |
+|:---------------|:---------------------|
+| _id            | ObjectId             |
+| band           | ObjectId (FK)        |
+| title          | String               |
+| songs          | List(ObjectId) (FK)  |
+| genre          | String               |
+
+``` javascript
+{
+    _id: 5bf31c40abbf7f4157db6ca7,
+    band: 5bf31c40abbf7f4157db6ca6,
+    title: 'Appetite for Destruction',
+    songs: [ 5bf31c40abbf7f4157db6ca8, 5bf31c40abbf7f4157db6ca9 ],
+    genre: 'Rock'
+}
+```
+
+---
+
+### Song
+|   Field Name   |      Field Type      |
+|:---------------|:---------------------|
+| _id            | ObjectId             |
+| album          | ObjectId (FK)        |
+| title          | String               |
+| lengthInSeconds| Number               |
+| streams        | Number               |
+
+``` javascript
+{
+    _id: 5bf31c40abbf7f4157db6ca9,
+    album: 5bf31c40abbf7f4157db6ca7,
+    title: 'Welcome to the Jungle',
+    lengthInSeconds: 271,
+    streams: 80678
+}
+```
+---
+
+### Artist
+|   Field Name   |      Field Type      |
+|:---------------|:---------------------|
+| _id            | ObjectId             |
+| name           | String               |
+| bands          | List(History)        |
+| birth          | String               |
+| death          | String               |
+
+### History _(subdoc of Artist)_
+|   Field Name   |      Field Type      |
+|:---------------|:---------------------|
+| band           | ObjectId (FK)        |
+| yearStart      | Number               |
+| yearEnd        | Number               |
+| roles          | List(String)         |
+
+---
+
+### Genre
+|   Field Name   |      Field Type      |
+|:---------------|:---------------------|
+| _id            | ObjectId             |
+| title          | String               |
+| bands          | List(ObjectId) (FK)  |
+
+---
+
+Some notable relationships among the data:
+- One-to-Many
+    - Band-Album
+    - Album-Song
+- Many-to-Many
+    - Artist-Band
+    - Genre-Band
+
 We'll see you on the other side!

@@ -1,1 +1,5 @@
 node_modules
+out.json
+public/js/bootstrap.bundle.min.js
+public/css/bootstrap.min.css
+.vscode

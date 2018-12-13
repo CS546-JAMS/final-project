@@ -1,0 +1,239 @@
+{
+    "Albums": [
+        {
+            "title": "Appetite for Destruction",
+            "songs": [],
+            "genre": "Rock",
+            "description": "Appetite for Destruction is the debut studio album by American hard rock band Guns N' Roses. It was released on July 21, 1987, by Geffen Records."
+        },
+        {
+            "title": "Use Your Illusion I",
+            "songs": [],
+            "genre": "Classic Rock",
+            "description": "Use Your Illusion I is the third studio album by American rock band Guns N' Roses, released on the same day as its counterpart Use Your Illusion II. Both albums were released in conjunction with the Use Your Illusion Tour."
+        },
+        {
+            "title": "Random Access Memories",
+            "songs": [],
+            "genre": "Electronic Funk",
+            "description": "Random Access Memories is the fourth studio album by French electronic music duo Daft Punk. It was released on 17 May 2013, by the duo's imprint Daft Life and Columbia Records. The album pays tribute to the late 1970s and early 1980s American music, particularly from Los Angeles."
+        },
+        {
+            "title": "Homework",
+            "songs": [],
+            "genre": "Electronic Funk",
+            "description": "Homework is the debut studio album by the French electronic music duo Daft Punk, released on 20 January 1997 by Virgin Records and Soma Quality Recordings. The duo produced the tracks without plans to release an album. After working on projects that were intended to be separate singles over five months, they considered the material good enough for an album."
+        },
+        {
+            "title": "Mr. Finish Line",
+            "songs": [],
+            "genre": "Funk",
+            "description": "The band's third album, Mr Finish Line, was released in November 2017. It featured veteran instrumentalists James Gadson, Bootsy Collins, Michael Bland, David T. Walker, and vocalists Coco O., Antwaun Stanley, Joey Dosik, Christine Hucal, and Charles Jones."
+        },
+        {
+            "title": "IV",
+            "songs": [],
+            "genre": "Jazz",
+            "description": "IV is the fourth studio album from Canadian jazz instrumental hip hop band BadBadNotGood. It was released on July 8, 2016. It features collaborations with Future Islands frontman Sam Herring, saxophonist Colin Stetson, Haitian-Canadian musician Kaytranada, American hip hop artist Mick Jenkins, and Canadian singer-songwriter Charlotte Day Wilson."
+        },
+        {
+            "title": "Iridescence",
+            "songs": [],
+            "genre": "Hip Hop",
+            "description": "Iridescence (stylized in all lowercase) is the fourth studio album by American collective Brockhampton, released on September 21, 2018 by Question Everything, Inc. and RCA Records, as their major-label debut and the first installment of their The Best Years of Our Lives trilogy. The self-produced album was recorded at Abbey Road Studios in London, as well as the group's own studio in Hawaii."
+        }
+    ],
+    "Artists": [
+        {
+            "name": "Slash",
+            "bands": [
+                {
+                    "yearStart": 1985,
+                    "yearEnd": 1996,
+                    "roles": ["Lead Guitar", "Guitar"]
+                }
+            ],
+            "birth": "07-23-1965"
+        },
+        {
+            "name": "Axl Rose",
+            "bands": [
+                {
+                    "yearStart": 1985,
+                    "roles": ["Vocals"]
+                }
+            ],
+            "birth": "02-06-1962"
+        },
+        {
+            "name": "Alexander Sowinski",
+            "bands": [
+                {
+                    "yearStart": 2010,
+                    "roles": ["Drums"]
+                }
+            ],
+            "birth": "04-01-1988"
+        },
+        {
+            "name": "Thomas Bangalter",
+            "bands": [
+                {
+                    "yearStart": 1992,
+                    "roles": ["Composer", "DJ"]
+                }
+            ],
+            "birth": "01-03-1975"
+        },
+        {
+            "name": "Kevin Abstract",
+            "bands": [
+                {
+                    "yearStart": 2009,
+                    "roles": ["Vocals"]
+                }
+            ],
+            "birth": "07-16-1996"
+        },
+        {
+            "name": "Theo Katzman",
+            "bands": [
+                {
+                    "yearStart": 2010,
+                    "roles": ["Vocals", "Guitar"]
+                },
+                {
+                    "yearStart": 2007,
+                    "yearEnd": 2010,
+                    "roles": ["Vocals"]
+                }
+            ],
+            "birth": "04-02-1986"
+        }
+    ],
+    "Bands": [
+        {
+            "name": "Guns N' Roses",
+            "genres": [],
+            "members": [],
+            "albums": [],
+            "likes": 12879,
+            "description": "Guns N' Roses, often abbreviated as GNR, is an American hard rock band from Los Angeles, California, formed in 1985. When they signed to Geffen Records in 1986, the band comprised vocalist Axl Rose, lead guitarist Slash, rhythm guitarist Izzy Stradlin, bassist Duff McKagan, and drummer Steven Adler. The current lineup consists of Rose, Slash, McKagan, keyboardist Dizzy Reed, guitarist Richard Fortus, drummer Frank Ferrer and keyboardist Melissa Reese."
+        },
+        {
+            "name": "Vulfpeck",
+            "genres": [],
+            "members": [],
+            "albums": [],
+            "likes": 5980,
+            "description": "Vulfpeck is an American funk group founded in 2011. Influenced by rhythm sections of the past, the band has released four EPs, three albums, and a silent album on Spotify titled Sleepify – royalties from which funded the band's admission-free tour in 2014. The band's upcoming album, Hill Climber, will be released in December 2018."
+        },
+        {
+            "name": "BADBADNOTGOOD",
+            "genres": [],
+            "members": [],
+            "albums": [],
+            "likes": 4337,
+            "description": "BadBadNotGood (stylized as BADBADNOTGOOD) is an instrumental music group from Toronto, Ontario. The group includes keyboardist Matthew Tavares, bassist Chester Hansen, saxophonist Leland Whitty, and drummer Alexander Sowinski. They are known for their interpretations of hip hop tracks and their collaborations with Kendrick Lamar, Tyler, The Creator, Earl Sweatshirt, Denzel Curry, Danny Brown, Mick Jenkins, and Ghostface Killah."
+        },
+        {
+            "name": "Daft Punk",
+            "genres": [],
+            "members": [],
+            "albums": [],
+            "likes": 24011,
+            "description": "Daft Punk are a French electronic music duo formed in Paris in 1993 by Guy-Manuel de Homem-Christo and Thomas Bangalter. They achieved popularity in the late 1990s as part of the French house movement, and had success in the years following, combining elements of house music with funk, techno, disco, rock and synthpop. They have worn ornate helmets and gloves to assume robot personas in most public appearances since 2001, and rarely grant interviews or appear on television."
+        },
+        {
+            "name": "BROCKHAMPTON",
+            "genres": [],
+            "members": [],
+            "albums": [],
+            "likes": 10456,
+            "description": "Brockhampton is an American musical collective formed in San Marcos, Texas, in 2015 and currently based in California. Led by Kevin Abstract, Brockhampton formed partially through the online forum 'KanyeToThe', and define themselves as a boy band. In specifically labeling themselves in this way, as the members have repeatedly emphasized in interviews and on social media, they aim to reclaim or redefine the word, as their style does not fit neatly into the 'boy band stereotype'."
+        }
+    ],
+    "Genres": [],
+    "Songs": [
+        {
+            "title": "Paradise City",
+            "lengthInSeconds": 406,
+            "streams": 52567
+        },
+        {
+            "title": "Welcome to the Jungle",
+            "lengthInSeconds": 271,
+            "streams": 80678
+        },
+        {
+            "title": "Sweet Child o' Mine",
+            "lengthInSeconds": 355,
+            "streams": 76830 
+        },
+        {
+            "title": "The Garden",
+            "lengthInSeconds": 322,
+            "streams": 25613 
+        },
+        {
+            "title": "Bad Apples",
+            "lengthInSeconds": 268,
+            "streams": 46284 
+        },
+        {
+            "title": "Bad Obsession",
+            "lengthInSeconds": 328,
+            "streams": 73283 
+        },
+        {
+            "title": "Perfect Crime",
+            "lengthInSeconds": 143,
+            "streams": 11274 
+        },
+        {
+            "title": "Birds of a Feather, We Rock Together",
+            "lengthInSeconds": 285,
+            "streams": 6428
+        },
+        {
+            "title": "Business Casual",
+            "lengthInSeconds": 183,
+            "streams": 3907
+        },
+        {
+            "title": "Vulf Pack",
+            "lengthInSeconds": 157,
+            "streams": 2265
+        },
+        {
+            "title": "Get Lucky",
+            "lengthInSeconds": 369,
+            "streams": 92635
+        },
+        {
+            "title": "Doin' It Right",
+            "lengthInSeconds": 251,
+            "streams": 65174
+        },
+        {
+            "title": "Around the World",
+            "lengthInSeconds": 424,
+            "streams": 51035
+        },
+        {
+            "title": "WEIGHT",
+            "lengthInSeconds": 260,
+            "streams": 23573
+        },
+        {
+            "title": "THUG LIFE",
+            "lengthInSeconds": 123,
+            "streams": 25090
+        },
+        {
+            "title": "Time Moves Slow",
+            "lengthInSeconds": 273,
+            "streams": 3846
+        }
+    ]
+}
