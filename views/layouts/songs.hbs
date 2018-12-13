@@ -4,7 +4,7 @@
         <ul class="no-bullet">
             {{#each this.songs}}
                 <li>
-                    <h3>{{{link 'songs' this._id this.title false}}}</h3>
+                    <h3>{{{link 'albums' this.album._id this.title false}}}</h3>
                     <p>{{{commatize this.streams}}} {{{pluralize this.streams 'stream'}}}</p>
                     <span>
                         <small class="greyed-text">{{{timeInMinutes this.lengthInSeconds}}}</small>

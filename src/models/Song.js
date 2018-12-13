@@ -4,7 +4,8 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 const songSchema = new mongoose.Schema({
     album: {
         type: ObjectId,
-        ref: 'Album'
+        ref: 'Album',
+        required: true
     },
     title: {
         type: String,
