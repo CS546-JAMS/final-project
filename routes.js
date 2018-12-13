@@ -66,7 +66,7 @@ module.exports = app => {
             .populate('songs')
             .populate('band', 'name')
             .then((album) => {
-                res.status(200).render('layouts/albumDetails', { album });
+                res.status(200).render('layouts/albumDetails', album); //we don't have a list, so we can pass in direct
             })
             .catch((err) => handleErr(err, res));
     });
