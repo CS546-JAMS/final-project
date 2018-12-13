@@ -1,6 +1,7 @@
 const ops = require('./src/ops');
 const conn = require('./src/db');
 const mongoose = require('mongoose');
+
 //we can pass in more options to populate to tune
 //exactly what we want to return
 
@@ -117,25 +118,103 @@ module.exports = app => {
         //return most popular songs
         mongoose.model('Song').find({})
             .sort({'streams': -1})
-            .limit(10)
+            .limit(100)
             .populate('album', 'title')
             .then((songs) => {
                 res.render('layouts/songs', { songs })
             })
             .catch((err) => handleErr(err, res));
     });
-
-    //songs/:id only available via search, must implement
+  
     app.get('/songs/:id', (req, res) => {
-        mongoose.model('Song').findById(req.params.id)
+          mongoose.model('Song').findById(req.params.id)
+              .then((song) => {
+                  return mongoose.model('Album').findById(song.album)
+                      .populate('songs')
+              })
+              .then((album) => {
+                  res.render('layouts/albumDetails', { album })
+              })
+              .catch((err) => handleErr(err, res));
+
+    app.post('/artists', (req, res) => {
+        ops.insert('artist', newArtist)
+            .then((newArtist) => {
+                res.status(200).send(newArtist);
+            })
+            .catch((err) => {
+                res.status(400).send(messages(400));
+            })
+      });
+      
+    app.post('/songs', (req, res) => {
+        ops.insert('song', req.body)
             .then((song) => {
-                return mongoose.model('Album').findById(song.album)
-                    .populate('songs')
+                res.status(200).send(song);
             })
+            .catch((err) => {
+                res.status(400).send(messages(400));
+            })
+      });
+
+    app.post('/albums', (req, res) => {
+        ops.insert('album', req.body)
             .then((album) => {
-                res.render('layouts/albumDetails', { album })
+                res.status(200).send(album);
             })
-            .catch((err) => handleErr(err, res));
+            .catch((err) => {
+                res.status(400).send(messages(400));
+            })
+    });
+
+    app.post('/bands', (req, res) => {
+        ops.insert('band', req.body)
+            .then((band) => {
+                res.status(200).send(band);
+            })
+            .catch((err) => {
+                res.status(400).send(messages(400));
+            })
+    });
+
+    app.put('/bands/:id', (req, res) => {
+        ops.updateById('band', req.params.id, req.body)
+            .then((band) => {
+                res.status(200).send(band);
+            })
+            .catch((err) => {
+                res.status(400).send(messages(400));
+            })
+    });
+
+    app.put('/albums/:id', (req, res) => {
+        ops.updateById('album', req.params.id, req.body)
+            .then((album) => {
+                res.status(200).send(album);
+            })
+            .catch((err) => {
+                res.status(400).send(messages(400));
+            })
+    });
+
+    app.put('/songs/:id', (req, res) => {
+        ops.updateById('song', req.params.id, req.body)
+            .then((song) => {
+                res.status(200).send(song);
+            })
+            .catch((err) => {
+                res.status(400).send(messages(400));
+            })
+    });
+
+    app.put('/artists/:id', (req, res) => {
+        ops.updateById('artist', req.params.id, req.body)
+            .then((artist) => {
+                res.status(200).send(artist);
+            })
+            .catch((err) => {
+                res.status(400).send(messages(400));
+            })
     });
 
     app.get('/search', async (req, res) => {

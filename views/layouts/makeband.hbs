@@ -1,0 +1,57 @@
+<div class="createStuff">
+    <p class="cbTitle">Create!</p>
+    <br>
+    <p>What would you like to create</p>
+    <form method="GET" action="/search" class="form-inline">
+        <select name="t" class="form-control mr-sm-2">
+            <option>Bands</option>
+            <option>Albums</option>
+            <option>Songs</option>
+            <option>Artists</option>
+            <option>Genres</option>
+        </select>    
+        <button class="btn btn-primary" type="submit">Go</button>               
+    </form>
+    <div class="makeBand">
+        <form method="POST" action="/band-new" class="form-style">
+            <h3>Add a Band</h3>
+            Band Name:
+            <input name="band-name"></input><br><br>
+            Band Description:
+            <input name="band-desc"></input><br><br>
+            Genres (please separate each genre with a comma):
+            <input name="genre-title"></input><br><br>
+            <button class="addButt" type="submit">Add</button><br><br>
+        </form>
+    </div>
+    <div class="makeAlb">
+        <form method="POST" action="/album-new" class="form-style">
+            <h3>Add an Album</h3>
+            Album Name: 
+            <input name="album-title"></input><br><br>
+            <button class="addButt" type="submit">Add</button><br><br>
+        </form>
+    </div>
+    <div class="makeSong">
+        <form  method="POST" action="/song-new" class="form-style">
+            <h3>Add a Song</h3>
+            Song Name: 
+            <input name="song-title"></input><br><br>
+            Length of Song in Seconds (optional):
+            <input name="song-len"></input><br><br>
+            <button class="addButt" type="submit">Add</button><br><br>
+        </form>
+    </div>
+    <div class="makeArtist">
+        <form method="POST" action="/artist-new" class="form-style">
+            <h3>Add an Artist</h3>
+            Artist Name: 
+            <input name="artist-name"></input><br><br>
+            Birthday (optional):
+            <input name="bday"></input><br><br>
+            Died (optional):
+            <input name="dday"></input><br><br>
+            <button class="addButt" type="submit">Add</button><br><br>
+        </form>
+    </div>
+</div>
