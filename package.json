@@ -25,14 +25,12 @@
   },
   "homepage": "https://github.com/CS546-JAMS/final-project#readme",
   "dependencies": {
-    "bluebird": "^3.5.3",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "express-handlebars": "^3.0.0",
+    "moment": "^2.23.0",
     "mongodb": "^3.1.9",
     "mongoose": "^5.3.12",
-    "mongoose-paginate": "^5.0.3",
-    "passport": "^0.4.0",
     "validator": "^10.9.0"
   },
   "devDependencies": {

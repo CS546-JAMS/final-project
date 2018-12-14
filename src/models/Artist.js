@@ -20,7 +20,8 @@ const history = new mongoose.Schema({
 const artistSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     bands: [{ 
         type: history

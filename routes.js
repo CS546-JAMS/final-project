@@ -1,6 +1,7 @@
 const ops = require('./src/ops');
 const conn = require('./src/db');
 const mongoose = require('mongoose');
+const generate = require('./generator');
 
 //we can pass in more options to populate to tune
 //exactly what we want to return
@@ -31,7 +32,28 @@ module.exports = app => {
 
         //in the case that a name has been taken -- check serverside.  If it is taken, perform a redirect with a queryparam setting query.taken = true.
         //check for this when the route gets hit for a GET, if it is there, render some extra stuff on the bottom of the page.
-        res.status(200).send('Under construction');
+        const out = {}
+        const bands = mongoose.model('Band').find({})
+            .sort({'likes': -1}) //descending order
+            .limit(3)
+            .then((bands) => { out.bands = bands })
+
+        const albums = mongoose.model('Album').find({})
+            .sort({'totalStreams': -1})
+            .limit(3)
+            .populate('band', 'name')
+            .then((albums) => { out.albums = albums })
+
+        const songs = mongoose.model('Song').find({})
+            .sort({'streams': -1})
+            .limit(3)
+            .populate('album', 'title')
+            .then((songs) => { out.songs = songs })
+
+        Promise.all([bands, albums, songs])
+            .then(() => {
+                res.render('layouts/dashboard', out)
+            })
     });
 
     app.get('/artists/:id', (req, res) => {
@@ -39,9 +61,10 @@ module.exports = app => {
         //find a way to sort the bands by the start
         //and end dates
         mongoose.model('Artist').findById(req.params.id)
-            .populate('bands.band')
+            .populate('bands.band', 'name')
             .then((artist) => {
-                res.status(200).send(artist);
+                res.send(artist);
+                //res.render('layouts/artistDetails', artist);
             })
             .catch((err) => handleErr(err, res));
     });
@@ -63,8 +86,9 @@ module.exports = app => {
         //return an album page
         mongoose.model('Album').findById(req.params.id)
             .populate('songs')
+            .populate('band', 'name')
             .then((album) => {
-                res.status(200).send(album);
+                res.status(200).render('layouts/albumDetails', album); //we don't have a list, so we can pass in direct
             })
             .catch((err) => handleErr(err, res));
     });
@@ -85,7 +109,7 @@ module.exports = app => {
         //return a band's individual page
         mongoose.model('Band').findById(req.params.id)
             .populate('albums', 'title genre')
-            .populate('members', 'name bands.yearStart bands.yearEnd')
+            .populate('members', 'name bands.band bands.yearStart bands.yearEnd')
             .then((band) => {
                 res.render('layouts/bandDetails', band);
             })
@@ -104,12 +128,12 @@ module.exports = app => {
 
     app.get('/genres/:name', (req, res) => {
         //return a list of the most popular bands in that genre
-        mongoose.model('Genre').find({ title: req.params.name })
-            .populate('bands', 'name likes') //retrieve only the band's name and likes
-            .sort('bands.likes')
+        mongoose.model('Genre').findOne({ title: req.params.name })
+            .populate('bands', 'name albums likes') //retrieve only the band's name and likes
+            .sort({'bands.likes': -1})
             .limit(10)
-            .then((bands) => {
-                res.status(200).send(bands);
+            .then((genres) => {
+                res.render('layouts/genreDetails', genres);
             })
             .catch((err) => handleErr(err, res));
     });
@@ -118,7 +142,7 @@ module.exports = app => {
         //return most popular songs
         mongoose.model('Song').find({})
             .sort({'streams': -1})
-            .limit(100)
+            .limit(10)
             .populate('album', 'title')
             .then((songs) => {
                 res.render('layouts/songs', { songs })
@@ -139,12 +163,16 @@ module.exports = app => {
     });
 
     app.post('/artists', (req, res) => {
-        ops.insert('artist', newArtist)
-            .then((newArtist) => {
-                res.status(200).send(newArtist);
+        ops.insert('artist', req.body)
+            .then((artist) => {
+                res.status(200).send(artist);
             })
             .catch((err) => {
-                res.status(400).send(messages(400));
+                if(err.name === "MongoError") {
+                    const message = "That artist name is already taken.  Please try a different one."
+                    res.status(400).send({ message })
+                }
+                else res.status(400).send(messages(400));
             })
       });
       
@@ -174,11 +202,18 @@ module.exports = app => {
                 res.status(200).send(band);
             })
             .catch((err) => {
-                res.status(400).send(messages(400));
+                if(err.name === "MongoError") { //mongoose can't intercept this it seems, comes right from the driver
+                    const message = {
+                        message: "That band name is already taken.  Maybe try one of these?",
+                        names: [ generate(), generate(), generate() ] //sue me
+                    }
+                    res.status(400).send(message);
+                }
+                else res.status(400).send(messages(400));
             })
     });
 
-    app.put('/bands/:id', (req, res) => {
+    app.patch('/bands/:id', (req, res) => {
         ops.updateById('band', req.params.id, req.body)
             .then((band) => {
                 res.status(200).send(band);
@@ -188,7 +223,7 @@ module.exports = app => {
             })
     });
 
-    app.put('/albums/:id', (req, res) => {
+    app.patch('/albums/:id', (req, res) => {
         ops.updateById('album', req.params.id, req.body)
             .then((album) => {
                 res.status(200).send(album);
@@ -198,7 +233,7 @@ module.exports = app => {
             })
     });
 
-    app.put('/songs/:id', (req, res) => {
+    app.patch('/songs/:id', (req, res) => {
         ops.updateById('song', req.params.id, req.body)
             .then((song) => {
                 res.status(200).send(song);
@@ -208,7 +243,7 @@ module.exports = app => {
             })
     });
 
-    app.put('/artists/:id', (req, res) => {
+    app.patch('/artists/:id', (req, res) => {
         ops.updateById('artist', req.params.id, req.body)
             .then((artist) => {
                 res.status(200).send(artist);
@@ -218,6 +253,8 @@ module.exports = app => {
             })
     });
 
+    //TODO: Perhaps figure out a way to do this with re-routing.  This is very tightly coupled, and in fact involves duplicates
+    //of other code.
     app.get('/search', async (req, res) => {
         //validate in case they tried to run around the form, return a list page that is returned from the db.  If it's empty
         //return a generic error page
@@ -226,20 +263,12 @@ module.exports = app => {
 
         const types = {
             Bands: {
-                multi: {
-                    layout: 'bands',
-                    search: (name) => { 
-                        return mongoose.model('Band').find({ name })
-                            .sort({'likes': -1}) //descending order
-                            .limit(10) 
-                    }
-                },
                 single: {
                     layout: 'bandDetails',
                     search: (name) => { 
                         return mongoose.model('Band').findOne({ name }) 
                             .populate('albums', 'title genre')
-                            .populate('members', 'name bands.yearStart bands.yearEnd') 
+                            .populate('members', 'name bands.band bands.yearStart bands.yearEnd') 
                     }
                 },
                 count: (name) => { return mongoose.model('Band').countDocuments({ name })}
@@ -260,6 +289,7 @@ module.exports = app => {
                     search: (title) => { 
                         return mongoose.model('Album').findOne({ title })
                             .populate('songs')
+                            .populate('band', 'name')
                     }
                 },
                 count: (title) => { return mongoose.model('Album').countDocuments({ title })}
@@ -280,7 +310,8 @@ module.exports = app => {
                         return mongoose.model('Song').findOne({ title })
                             .then((song) => {
                                 return mongoose.model('Album').findById(song.album)
-                                    .populate('songs')
+                                .populate('songs')
+                                .populate('band', 'name')
                             })
                     }
                 },
@@ -299,7 +330,7 @@ module.exports = app => {
                     layout: 'genreDetails',
                     search: (title) => { 
                         return mongoose.model('Genre').findOne({ title })
-                            .populate('bands', 'name likes') //retrieve only the band's name and likes
+                            .populate('bands', 'name albums likes') //retrieve only the band's name and likes
                             .sort('bands.likes')
                             .limit(10)
                     }
@@ -307,18 +338,11 @@ module.exports = app => {
                 count: (title) => { return mongoose.model('Genre').countDocuments({ title })}
             },
             Artists: {
-                multi: {
-                    layout: 'artists',
-                    search: (name) => { 
-                        //TODO: need page
-                        return mongoose.model('Artist').find({ name })
-                    }
-                },
                 single: {
                     layout: 'artistDetails',
                     search: (name) => { 
                         return mongoose.model('Artist').findOne({ name })
-                            .populate('bands.band')
+                            .populate('bands.band', 'name')
                     }
                 },
                 count: (name) => { return mongoose.model('Artist').countDocuments({ name })}

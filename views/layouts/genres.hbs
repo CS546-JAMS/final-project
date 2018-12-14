@@ -1,19 +1,17 @@
-<div class="pushed-down">
-    {{#if genres}}
-        <h1>Explore genres:</h1>
-        <small class="greyed-text">We've probably got what you're looking for.</small>
-        <ul class="no-bullet">
-            {{#each genres}}
-                <li class="no-bullets">
-                    <h1>{{{link 'genres' this.title this.title false}}}</h1>
-                    <p>
-                        {{{commaString (linkList 'bands' this.bands)}}}
-                    </p>
-                </li>
-                <hr>
-            {{/each}}
-        </ul>
-    {{else}}
-        <h1>Looks like we're fresh out of genres...</h1>
-    {{/if}}
-</div>
+{{#if genres}}
+    <h1>Explore genres:</h1>
+    <small class="greyed-text">We've probably got what you're looking for.</small>
+    <ul class="no-bullet">
+        {{#each genres}}
+            <li class="no-bullets">
+                <h2>{{{link 'genres' this.title this.title false}}}</h2>
+                <p>
+                    {{{commaString (linkList 'bands' this.bands)}}}
+                </p>
+            </li>
+            <hr>
+        {{/each}}
+    </ul>
+{{else}}
+    <h1>Looks like we're fresh out of genres...</h1>
+{{/if}}

@@ -1,0 +1,29 @@
+<h1>{{name}}</h1>
+
+{{#if birth}}
+<div class="small-margins">
+    <p class="no-bottom-space">Born: {{{dateFormat this.birth}}}</p>
+    <small class="greyed-text">{{{timeAgo this.birth}}}</small>
+</div>
+{{/if}}
+
+{{#if death}}
+<div class="small-margins">
+    <p class="no-bottom-space">Death: {{{dateFormat this.death}}}</p>
+    <small class="greyed-text">{{{timeAgo this.birth}}}</small>
+</div>
+{{/if}}
+
+{{#if bands}}
+    <ul class="no-bullet">
+        {{#each bands}}
+            <li>
+                <p class="no-bottom-space">{{{link 'bands' this.band._id this.band.name false}}} - {{{commaString this.roles}}}</p>
+                <small class="greyed-text">{{{simpleTimeFrame this.yearStart this.yearEnd}}}</small>
+            </li>
+            <hr>
+        {{/each}}
+    </ul>
+{{else}}
+    <h3>No history found...</h3>
+{{/if}}
