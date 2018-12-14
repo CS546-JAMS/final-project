@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 module.exports = {
 
     link: (type, id, text, greyed) => {
@@ -76,5 +78,23 @@ module.exports = {
             return `(${yearStart} - Present)`
         if(!yearStart && yearEnd)
             return `(Until ${yearEnd})`
+    },
+
+    //TODO: there's got to be a way to reference other helpers or extract methods or something
+    simpleTimeFrame: (yearStart, yearEnd) => {
+        if(yearStart && yearEnd)
+            return `(${yearStart} - ${yearEnd})`
+        if(yearStart && !yearEnd)
+            return `(${yearStart} - Present)`
+        if(!yearStart && yearEnd)
+            return `(Until ${yearEnd})`
+    },
+
+    dateFormat: (time) => {
+        return moment(time, 'MM-DD-YYYY').format('MMMM Do YYYY');
+    },
+
+    timeAgo: (time) => {
+        return `(${moment(time, 'MM-DD-YYYY').fromNow()})`;
     }
 }
