@@ -61,9 +61,10 @@ module.exports = app => {
         //find a way to sort the bands by the start
         //and end dates
         mongoose.model('Artist').findById(req.params.id)
-            .populate('bands.band')
+            .populate('bands.band', 'name')
             .then((artist) => {
-                res.status(200).send(artist);
+                res.send(artist);
+                //res.render('layouts/artistDetails', artist);
             })
             .catch((err) => handleErr(err, res));
     });
@@ -162,12 +163,16 @@ module.exports = app => {
     });
 
     app.post('/artists', (req, res) => {
-        ops.insert('artist', newArtist)
-            .then((newArtist) => {
-                res.status(200).send(newArtist);
+        ops.insert('artist', req.body)
+            .then((artist) => {
+                res.status(200).send(artist);
             })
             .catch((err) => {
-                res.status(400).send(messages(400));
+                if(err.name === "MongoError") {
+                    const message = "That artist name is already taken.  Please try a different one."
+                    res.status(400).send({ message })
+                }
+                else res.status(400).send(messages(400));
             })
       });
       
@@ -208,7 +213,7 @@ module.exports = app => {
             })
     });
 
-    app.put('/bands/:id', (req, res) => {
+    app.patch('/bands/:id', (req, res) => {
         ops.updateById('band', req.params.id, req.body)
             .then((band) => {
                 res.status(200).send(band);
@@ -218,7 +223,7 @@ module.exports = app => {
             })
     });
 
-    app.put('/albums/:id', (req, res) => {
+    app.patch('/albums/:id', (req, res) => {
         ops.updateById('album', req.params.id, req.body)
             .then((album) => {
                 res.status(200).send(album);
@@ -228,7 +233,7 @@ module.exports = app => {
             })
     });
 
-    app.put('/songs/:id', (req, res) => {
+    app.patch('/songs/:id', (req, res) => {
         ops.updateById('song', req.params.id, req.body)
             .then((song) => {
                 res.status(200).send(song);
@@ -238,7 +243,7 @@ module.exports = app => {
             })
     });
 
-    app.put('/artists/:id', (req, res) => {
+    app.patch('/artists/:id', (req, res) => {
         ops.updateById('artist', req.params.id, req.body)
             .then((artist) => {
                 res.status(200).send(artist);
@@ -248,6 +253,8 @@ module.exports = app => {
             })
     });
 
+    //TODO: Perhaps figure out a way to do this with re-routing.  This is very tightly coupled, and in fact involves duplicates
+    //of other code.
     app.get('/search', async (req, res) => {
         //validate in case they tried to run around the form, return a list page that is returned from the db.  If it's empty
         //return a generic error page
@@ -256,14 +263,6 @@ module.exports = app => {
 
         const types = {
             Bands: {
-                multi: {
-                    layout: 'bands',
-                    search: (name) => { 
-                        return mongoose.model('Band').find({ name })
-                            .sort({'likes': -1}) //descending order
-                            .limit(10) 
-                    }
-                },
                 single: {
                     layout: 'bandDetails',
                     search: (name) => { 
@@ -339,18 +338,11 @@ module.exports = app => {
                 count: (title) => { return mongoose.model('Genre').countDocuments({ title })}
             },
             Artists: {
-                multi: {
-                    layout: 'artists',
-                    search: (name) => { 
-                        //TODO: need page
-                        return mongoose.model('Artist').find({ name })
-                    }
-                },
                 single: {
                     layout: 'artistDetails',
                     search: (name) => { 
                         return mongoose.model('Artist').findOne({ name })
-                            .populate('bands.band')
+                            .populate('bands.band', 'name')
                     }
                 },
                 count: (name) => { return mongoose.model('Artist').countDocuments({ name })}
