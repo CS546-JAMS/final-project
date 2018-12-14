@@ -1,59 +1,49 @@
-<h1>Trending Now</h1>
 {{#if bands}}
+    <h1>Trending Bands</h1>
     <ul class="no-bullet">
         {{#each bands}}
             <li>
-                <span>{{this.name}}</span>
+                <h4>{{{link 'bands' this._id this.name false}}}</h4>
                 {{#if this.likes}}
-                    <span> - </span>
-                    <span>
-                        <small class="greyed-text">{{{commatize this.likes}}} {{{pluralize this.likes 'like'}}}</small>
-                    </span>
+                    <small class="greyed-text">{{{commatize this.likes}}} {{{pluralize this.likes 'like'}}}</small>
                 {{/if}}
             </li>
         {{/each}}
     </ul>
+    <a href="/bands" class="btn btn-primary">Explore Bands</a>
+    <hr class="pushed-down">
 {{/if}}
-<a href="/bands" class="btn btn-primary">Explore Bands</a>
-<hr>
 {{#if albums}}
+    <h1 class="pushed-down">Trending Albums</h1>
     <ul class="no-bullet">
         {{#each albums}}
             <li>
-                <span>{{this.title}}</span>
+                <h4>{{{link 'albums' this._id this.title false}}}</h4>
                 {{#if this.totalStreams}}
-                    <span> - </span>
-                    <span>
-                        <small class="greyed-text">{{{commatize this.totalStreams}}} {{{pluralize this.totalStreams 'stream'}}}</small>
-                    </span>   
+                    <small class="left-space greyed-text">{{{commatize this.totalStreams}}} {{{pluralize this.totalStreams 'stream'}}}</small>
+                    <span> | </span>
                 {{/if}}
-                <div>
-                    <small class="greyed-text">{{this.band.name}}</small>
-                </div>
+                <small class="greyed-text">{{{link 'bands' this.band._id this.band.name true}}}</small>
             </li>
         {{/each}}
     </ul>
+    <a href="/albums" class="btn btn-primary">Explore Albums</a>
+    <hr class="pushed-down">
 {{/if}}
-<a href="/albums" class="btn btn-primary">Explore Albums</a>
-<hr>
 {{#if songs}}
+    <h1 class="pushed-down">Trending Songs</h1>
     <ul class="no-bullet">
         {{#each songs}}
             <li>
-                <span>{{this.title}}</span>
+                <h4>{{{link 'songs' this._id this.title false}}}</h4>
                 {{#if this.streams}}
-                    <span> - </span>
-                    <span>
-                        <small class="greyed-text">{{{commatize this.streams}}} {{{pluralize this.streams 'stream'}}}</small>
-                    </span>   
+                    <small class="greyed-text">{{{commatize this.streams}}} {{{pluralize this.streams 'stream'}}}</small>
+                    <span> | </span>
                 {{/if}}
-                <div>
-                    <small class="greyed-text">{{this.album.title}}</small>
-                </div>
+                    <small class="greyed-text">{{{link 'albums' this.album._id this.album.title true}}}</small>
             </li>
-            
         {{/each}}
     </ul>
+    <a href="/songs" class="btn btn-primary">Explore Songs</a>
+    <hr class="pushed-down">
 {{/if}}
-<a href="/songs" class="btn btn-primary">Explore Songs</a>
-<hr>
