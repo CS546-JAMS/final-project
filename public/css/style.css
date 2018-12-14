@@ -15,6 +15,16 @@
     list-style-type: none;
 }
 
+.no-bottom-space {
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.small-margins {
+    margin-bottom: 2%;
+    margin-top: 2%;
+}
+
 li {
     margin-top: 5%;
     margin-bottom: 5%;
