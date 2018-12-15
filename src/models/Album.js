@@ -16,7 +16,8 @@ const albumSchema = new mongoose.Schema({
         ref: 'Song'
     }],
     genre: {
-        type: String
+        type: String,
+        required: true
     },
     description: {
         type: String
