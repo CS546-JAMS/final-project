@@ -63,8 +63,7 @@ module.exports = app => {
         mongoose.model('Artist').findById(req.params.id)
             .populate('bands.band', 'name')
             .then((artist) => {
-                res.send(artist);
-                //res.render('layouts/artistDetails', artist);
+                res.render('layouts/artistDetails', artist);
             })
             .catch((err) => handleErr(err, res));
     });
